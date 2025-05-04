@@ -157,10 +157,8 @@ document.addEventListener('DOMContentLoaded', function() {
         getRandomMessage: getRandomRabbitMessage
     };
     
-    // Show the rabbit when the page loads
-    setTimeout(() => {
-        showRabbit("Welcome! I'm your little helper! 🐰");
-    }, 2000);
+    // Don't automatically show the rabbit on all pages
+    // We'll control the welcome message from each specific page instead
     
     // Hook into the chat interface to show rabbit on new messages
     function hookIntoChatInterface() {

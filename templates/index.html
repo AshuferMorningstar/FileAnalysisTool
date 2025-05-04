@@ -21,9 +21,23 @@
 
 {% block scripts %}
 <script>
-    // Auto-redirect after 3 seconds
-    setTimeout(() => {
-        window.location.href = "{{ url_for('feelings') }}";
-    }, 5000);
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show welcome rabbit with a greeting after a short delay
+        setTimeout(function() {
+            if (window.Rabbit && typeof window.Rabbit.say === 'function') {
+                window.Rabbit.say("Hi Louise! Welcome to your special place! 🐰");
+                
+                // Play rabbit sound
+                if (window.SoundManager && typeof window.SoundManager.play === 'function') {
+                    window.SoundManager.play('rabbit');
+                }
+            }
+        }, 1000);
+        
+        // Auto-redirect after 5 seconds
+        setTimeout(() => {
+            window.location.href = "{{ url_for('feelings') }}";
+        }, 5000);
+    });
 </script>
 {% endblock %}

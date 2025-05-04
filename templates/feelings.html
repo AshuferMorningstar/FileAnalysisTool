@@ -44,3 +44,21 @@
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show rabbit with feelings page welcome message after a short delay
+        setTimeout(function() {
+            if (window.Rabbit && typeof window.Rabbit.say === 'function') {
+                window.Rabbit.say("Hi Louise! How are you feeling today? 🐰");
+                
+                // Play rabbit sound
+                if (window.SoundManager && typeof window.SoundManager.play === 'function') {
+                    window.SoundManager.play('rabbit');
+                }
+            }
+        }, 1500);
+    });
+</script>
+{% endblock %}
