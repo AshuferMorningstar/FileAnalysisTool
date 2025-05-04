@@ -854,68 +854,66 @@ document.addEventListener('DOMContentLoaded', function() {
                 chatMessages.innerHTML = '';
                 
                 if (data.status === 'success') {
-                    // Check if we need to show a welcome message
-                    // First, check if the user has seen the welcome message before
-                    const hasSeenWelcome = localStorage.getItem('has_seen_welcome') === 'true';
-                    
-                    // Check if there's a welcome message in the existing messages
-                    const hasWelcomeMessage = data.messages.some(msg => 
+                    // Check if we need to filter out duplicate welcome messages
+                    // Get only the first welcome message if multiple exist
+                    const welcomeMessages = data.messages.filter(msg => 
                         msg.sender === 'Bunny' && 
                         msg.content.includes("I'm Bunny, your friendly chat companion")
                     );
                     
-                    // Show welcome message only if: 
-                    // 1. There are no messages OR
-                    // 2. This is the first time the user is seeing the chat AND there's no welcome message
-                    if (data.messages.length === 0 || (!hasSeenWelcome && !hasWelcomeMessage)) {
+                    // If we have welcome messages, keep only the first one and filter the others out
+                    let messagesToDisplay = data.messages;
+                    if (welcomeMessages.length > 1) {
+                        // Keep the first welcome message, filter out the rest
+                        const firstWelcomeId = welcomeMessages[0].id;
+                        messagesToDisplay = data.messages.filter(msg => 
+                            !(msg.sender === 'Bunny' && 
+                              msg.content.includes("I'm Bunny, your friendly chat companion") && 
+                              msg.id !== firstWelcomeId)
+                        );
+                        
+                        console.log(`Filtered out ${welcomeMessages.length - 1} duplicate welcome messages`);
+                    }
+                    
+                    // Mark that this user has seen the welcome message (regardless)
+                    localStorage.setItem('has_seen_welcome', 'true');
+                    
+                    // Add welcome message only if there are no messages at all
+                    if (data.messages.length === 0) {
                         // Create the welcome message content
                         const welcomeMessage = "Hello! I'm Bunny, your friendly chat companion! 🐰 Messages you send here will be received by Louise's creator. Feel free to leave any thoughts or messages!";
                         
-                        // Save that this user has seen the welcome message
-                        localStorage.setItem('has_seen_welcome', 'true');
-                        
                         // If there are no messages, just show the welcome message locally
-                        if (data.messages.length === 0) {
-                            addMessageToChat(
-                                'Bunny', 
-                                welcomeMessage, 
-                                'received',
-                                new Date(), 
-                                null, 
-                                'Bunny' 
-                            );
-                        } else {
-                            // If there are messages but no welcome message, save it to the database
-                            fetch('/save_chat', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    sender: 'Bunny',
-                                    message: welcomeMessage,
-                                    user_name: 'Bunny',
-                                    device_id: 'system',
-                                    user_identifier: 'system_bunny',
-                                    message_type: 'welcome'
-                                }),
-                            })
-                            .then(response => response.json())
-                            .then(result => {
-                                if (result.status === 'success') {
-                                    // Add the welcome message to the chat with its ID
-                                    addMessageToChat(
-                                        'Bunny', 
-                                        welcomeMessage, 
-                                        'received',
-                                        new Date(),
-                                        result.message.id,
-                                        'Bunny',
-                                        'system_bunny'
-                                    );
-                                }
-                            });
-                        }
+                        // and save it to the database 
+                        fetch('/save_chat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                sender: 'Bunny',
+                                message: welcomeMessage,
+                                user_name: 'Bunny',
+                                device_id: 'system',
+                                user_identifier: 'system_bunny',
+                                message_type: 'welcome'
+                            }),
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.status === 'success') {
+                                // Add the welcome message to the chat with its ID
+                                addMessageToChat(
+                                    'Bunny', 
+                                    welcomeMessage, 
+                                    'received',
+                                    new Date(),
+                                    result.message.id,
+                                    'Bunny',
+                                    'system_bunny'
+                                );
+                            }
+                        });
                     }
                     
                     // Process existing messages
@@ -929,7 +927,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         
                         // Display existing chat history with staggered animations
-                        data.messages.forEach((item, index) => {
+                        // Use the filtered messages that don't have duplicates
+                        messagesToDisplay.forEach((item, index) => {
                             // Determine if this message is from the current user
                             // by comparing user identifiers
                             const isFromCurrentUser = item.user_identifier === currentUserIdentifier;
@@ -965,7 +964,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                                 
                                 // If this is the last message, start real-time updates
-                                if (index === data.messages.length - 1) {
+                                if (index === messagesToDisplay.length - 1) {
                                     startRealTimeUpdates();
                                 }
                             }, index * 100);
