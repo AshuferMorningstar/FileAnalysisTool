@@ -225,6 +225,108 @@ document.addEventListener('DOMContentLoaded', function() {
             50% { transform: translateY(-8px); }
             100% { transform: translateY(0px); }
         }
+        
+        @keyframes heart-burst {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); color: #ff1493; }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes wiggle {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        @keyframes rainbow-text {
+            0% { color: violet; }
+            15% { color: indigo; }
+            30% { color: blue; }
+            45% { color: green; }
+            60% { color: yellow; }
+            75% { color: orange; }
+            90% { color: red; }
+            100% { color: violet; }
+        }
+        
+        .heart-burst {
+            animation: heart-burst 0.6s ease-in-out;
+        }
+        
+        .wiggle {
+            animation: wiggle 0.5s ease-in-out;
+        }
+        
+        .rainbow {
+            animation: rainbow-text 2s linear infinite;
+        }
     `;
     document.head.appendChild(floatStyle);
+    
+    // Add interactive effects to text elements when clicked
+    const textElements = document.querySelectorAll('.message, .compliment, .birthday-message, h1, h2, h3, .feelings-question');
+    
+    textElements.forEach(element => {
+        element.style.cursor = 'pointer';
+        element.addEventListener('click', function(e) {
+            // Prevent double animations
+            if (this.classList.contains('heart-burst') || 
+                this.classList.contains('wiggle') || 
+                this.classList.contains('rainbow')) {
+                return;
+            }
+            
+            // Choose a random animation
+            const animations = ['heart-burst', 'wiggle', 'rainbow'];
+            const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+            
+            this.classList.add(randomAnimation);
+            
+            // Create small heart particles around click point
+            if (randomAnimation === 'heart-burst') {
+                for (let i = 0; i < 8; i++) {
+                    createHeart(e.clientX, e.clientY);
+                }
+            }
+            
+            // Remove animation class after it completes
+            const animationDuration = randomAnimation === 'rainbow' ? 2000 : 600;
+            setTimeout(() => {
+                this.classList.remove(randomAnimation);
+            }, animationDuration);
+        });
+    });
+    
+    // Function to create heart particles
+    function createHeart(x, y) {
+        const heart = document.createElement('div');
+        heart.innerHTML = '❤';
+        heart.style.position = 'fixed';
+        heart.style.left = `${x}px`;
+        heart.style.top = `${y}px`;
+        heart.style.fontSize = `${Math.random() * 10 + 10}px`;
+        heart.style.color = '#ff1493';
+        heart.style.opacity = '0.8';
+        heart.style.pointerEvents = 'none';
+        heart.style.zIndex = '9999';
+        heart.style.transform = 'translate(-50%, -50%)';
+        heart.style.transition = 'all 1s ease-out';
+        
+        document.body.appendChild(heart);
+        
+        // Animate heart
+        setTimeout(() => {
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * 100 + 50;
+            heart.style.transform = `translate(calc(-50% + ${Math.cos(angle) * distance}px), calc(-50% + ${Math.sin(angle) * distance}px)) scale(0.5)`;
+            heart.style.opacity = '0';
+        }, 10);
+        
+        // Remove heart after animation
+        setTimeout(() => {
+            heart.remove();
+        }, 1000);
+    }
 });
