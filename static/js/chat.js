@@ -66,6 +66,14 @@ function getUserIdentifier() {
     return identifier;
 }
 
+// Variables to control real-time updates
+let isRealTimeUpdatesActive = false;
+let lastMessageId = 0;
+let typingTimeout = null;
+let isTyping = false;
+let lastTypingUpdate = Date.now();
+let chatPollingInterval = null;
+
 document.addEventListener('DOMContentLoaded', function() {
     // Apply saved background on load
     setTimeout(() => {
@@ -88,6 +96,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const photoUploadBtn = document.getElementById('photo-upload');
     const audioUploadBtn = document.getElementById('audio-upload');
     const fileInput = document.getElementById('file-input');
+    
+    // Create GIF and sticker buttons
+    const gifButton = document.createElement('button');
+    gifButton.id = 'gif-button';
+    gifButton.className = 'chat-action-button';
+    gifButton.innerHTML = '<span>GIF</span>';
+    gifButton.title = 'Send a GIF';
+    
+    const stickerButton = document.createElement('button');
+    stickerButton.id = 'sticker-button';
+    stickerButton.className = 'chat-action-button';
+    stickerButton.innerHTML = '<span>😊</span>';
+    stickerButton.title = 'Send a sticker';
+    
+    // Add new buttons to the chat input area
+    const chatActionButtons = document.querySelector('.chat-action-buttons');
+    if (chatActionButtons) {
+        chatActionButtons.appendChild(gifButton);
+        chatActionButtons.appendChild(stickerButton);
+    }
     
     // Toggle chat visibility with animation
     chatButton.addEventListener('click', function() {
@@ -855,6 +883,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Get the current user's identifier
                         const currentUserIdentifier = getUserIdentifier();
                         
+                        // Get the latest message ID for real-time update tracking
+                        if (data.messages.length > 0) {
+                            lastMessageId = Math.max(...data.messages.map(msg => msg.id));
+                        }
+                        
                         // Display existing chat history with staggered animations
                         data.messages.forEach((item, index) => {
                             // Determine if this message is from the current user
@@ -890,8 +923,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                         }
                                     }, 500);
                                 }
+                                
+                                // If this is the last message, start real-time updates
+                                if (index === data.messages.length - 1) {
+                                    startRealTimeUpdates();
+                                }
                             }, index * 100);
                         });
+                    }
+                    
+                    // Start real-time updates even if there are no messages yet
+                    if (data.messages.length === 0) {
+                        startRealTimeUpdates();
                     }
                 }
             })
@@ -1064,6 +1107,423 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Error deleting message:', error);
             alert('Error deleting message. Please try again.');
+        });
+    }
+    
+    // Function to start real-time updates using polling
+    function startRealTimeUpdates() {
+        if (isRealTimeUpdatesActive) return; // Already running
+        
+        isRealTimeUpdatesActive = true;
+        console.log('Starting real-time updates...');
+        
+        // Set up polling interval (every 3 seconds)
+        chatPollingInterval = setInterval(checkForNewMessages, 3000);
+        
+        // Set up typing indicator events
+        chatInput.addEventListener('input', function() {
+            const now = Date.now();
+            
+            // Only send typing status if enough time has passed
+            if (!isTyping || now - lastTypingUpdate > 2000) {
+                isTyping = true;
+                lastTypingUpdate = now;
+                
+                // Send typing status to server (for future implementation)
+                // For now, just update typing timeout
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(() => {
+                    isTyping = false;
+                }, 2000);
+            }
+        });
+        
+        // Also check for new messages when chat container becomes visible
+        const chatObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'class') {
+                    if (!chatContainer.classList.contains('d-none')) {
+                        // Chat became visible, check for new messages immediately
+                        checkForNewMessages();
+                    } else {
+                        // Chat was hidden, stop real-time updates
+                        isRealTimeUpdatesActive = false;
+                        clearInterval(chatPollingInterval);
+                    }
+                }
+            });
+        });
+        
+        // Start observing the chat container for class changes
+        chatObserver.observe(chatContainer, { attributes: true });
+    }
+    
+    // Function to check for new messages
+    function checkForNewMessages() {
+        if (!isRealTimeUpdatesActive) return;
+        
+        fetch('/get_chat_history?since_id=' + lastMessageId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success' && data.messages && data.messages.length > 0) {
+                    // Get current user identifier
+                    const currentUserIdentifier = getUserIdentifier();
+                    
+                    // Only show new messages
+                    const newMessages = data.messages.filter(msg => !document.querySelector(`[data-message-id="${msg.id}"]`));
+                    
+                    // Update last message ID
+                    if (newMessages.length > 0) {
+                        lastMessageId = Math.max(...newMessages.map(msg => msg.id));
+                    }
+                    
+                    // Add new messages
+                    newMessages.forEach(item => {
+                        // Determine if this message is from the current user
+                        const isFromCurrentUser = item.user_identifier === currentUserIdentifier;
+                        
+                        // Set message type based on the identifier match
+                        const type = isFromCurrentUser ? 'sent' : 'received';
+                        
+                        // Remove typing indicator if present and this is a received message
+                        if (type === 'received') {
+                            const typingIndicators = document.querySelectorAll('.typing-indicator-container');
+                            typingIndicators.forEach(indicator => indicator.remove());
+                        }
+                        
+                        // Add the message with animation
+                        addMessageToChat(
+                            item.sender,
+                            item.content,
+                            type,
+                            item.timestamp,
+                            item.id,
+                            item.user_name,
+                            item.user_identifier
+                        );
+                        
+                        // Play notification sound for new messages from others
+                        if (type === 'received' && window.SoundManager && typeof window.SoundManager.play === 'function') {
+                            window.SoundManager.play('message');
+                        }
+                        
+                        // Make rabbit appear occasionally for received messages
+                        if (type === 'received' && Math.random() > 0.7) {
+                            if (window.Rabbit && typeof window.Rabbit.say === 'function') {
+                                window.Rabbit.say(window.Rabbit.getRandomMessage());
+                                
+                                // Play rabbit sound
+                                if (window.SoundManager && typeof window.SoundManager.play === 'function') {
+                                    window.SoundManager.play('rabbit');
+                                }
+                            }
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error checking for new messages:', error);
+                // Don't show error to user, just log it
+            });
+    }
+    
+    // Function to update settings and add profile picture
+    function setupProfilePicture() {
+        // Add profile picture section to settings modal
+        const settingsContent = document.querySelector('.settings-content');
+        
+        if (settingsContent) {
+            // Create profile picture section
+            const profileSection = document.createElement('div');
+            profileSection.classList.add('profile-section');
+            profileSection.innerHTML = `
+                <h4>Profile Picture</h4>
+                <div class="profile-picture-container">
+                    <div class="profile-picture" id="current-profile-picture">
+                        <img src="/static/images/default-avatar.png" alt="Profile Picture" id="profile-image">
+                    </div>
+                    <div class="profile-picture-actions">
+                        <button id="upload-profile-picture" class="btn btn-sm btn-primary">Upload Photo</button>
+                        <button id="remove-profile-picture" class="btn btn-sm btn-danger">Remove</button>
+                    </div>
+                </div>
+                <input type="file" id="profile-picture-input" accept="image/*" style="display:none">
+            `;
+            
+            // Add the profile section to settings content
+            settingsContent.appendChild(profileSection);
+            
+            // Set up profile picture upload
+            const uploadButton = document.getElementById('upload-profile-picture');
+            const fileInput = document.getElementById('profile-picture-input');
+            const profileImage = document.getElementById('profile-image');
+            
+            if (uploadButton && fileInput && profileImage) {
+                // Check if we already have a saved profile picture
+                const savedProfilePic = localStorage.getItem('profile_picture');
+                if (savedProfilePic) {
+                    profileImage.src = savedProfilePic;
+                }
+                
+                // Set up upload button click
+                uploadButton.addEventListener('click', function() {
+                    fileInput.click();
+                });
+                
+                // Handle file selection
+                fileInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(e) {
+                            // Save to localStorage (base64 encoded)
+                            localStorage.setItem('profile_picture', e.target.result);
+                            
+                            // Update display
+                            profileImage.src = e.target.result;
+                            
+                            // Show success animation
+                            uploadButton.innerHTML = '<i class="fas fa-check"></i>';
+                            uploadButton.style.backgroundColor = 'var(--happy-color)';
+                            
+                            setTimeout(() => {
+                                uploadButton.textContent = 'Upload Photo';
+                                uploadButton.style.backgroundColor = '';
+                            }, 1500);
+                        };
+                        
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+                
+                // Handle remove button
+                const removeButton = document.getElementById('remove-profile-picture');
+                if (removeButton) {
+                    removeButton.addEventListener('click', function() {
+                        // Reset to default
+                        localStorage.removeItem('profile_picture');
+                        profileImage.src = '/static/images/default-avatar.png';
+                        
+                        // Show success animation
+                        removeButton.innerHTML = '<i class="fas fa-check"></i>';
+                        removeButton.style.backgroundColor = 'var(--sad-color)';
+                        
+                        setTimeout(() => {
+                            removeButton.textContent = 'Remove';
+                            removeButton.style.backgroundColor = '';
+                        }, 1500);
+                    });
+                }
+            }
+        }
+    }
+    
+    // Add profile picture setup when settings are opened
+    const chatSettingsBtn = document.getElementById('chat-settings');
+    if (chatSettingsBtn) {
+        chatSettingsBtn.addEventListener('click', function() {
+            // Add a delay to make sure the settings modal is created
+            setTimeout(setupProfilePicture, 100);
+        });
+    }
+    
+    // Setup GIF button click handler
+    const gifButton = document.getElementById('gif-button');
+    if (gifButton) {
+        gifButton.addEventListener('click', function() {
+            // For now, we'll add a simple GIF picker with a few pre-selected GIFs
+            const gifPicker = document.createElement('div');
+            gifPicker.classList.add('gif-picker');
+            gifPicker.innerHTML = `
+                <div class="gif-picker-header">
+                    <h4>Select a GIF</h4>
+                    <button class="close-gif-picker">&times;</button>
+                </div>
+                <div class="gif-picker-content">
+                    <div class="gif-item" data-src="/static/images/gifs/happy.gif">
+                        <img src="/static/images/gifs/happy.gif" alt="Happy GIF">
+                    </div>
+                    <div class="gif-item" data-src="/static/images/gifs/sad.gif">
+                        <img src="/static/images/gifs/sad.gif" alt="Sad GIF">
+                    </div>
+                    <div class="gif-item" data-src="/static/images/gifs/love.gif">
+                        <img src="/static/images/gifs/love.gif" alt="Love GIF">
+                    </div>
+                    <div class="gif-item" data-src="/static/images/gifs/laugh.gif">
+                        <img src="/static/images/gifs/laugh.gif" alt="Laugh GIF">
+                    </div>
+                </div>
+            `;
+            
+            // Add to chat container
+            document.body.appendChild(gifPicker);
+            
+            // Set up close button
+            const closeButton = gifPicker.querySelector('.close-gif-picker');
+            closeButton.addEventListener('click', function() {
+                gifPicker.remove();
+            });
+            
+            // Set up GIF selection
+            const gifItems = gifPicker.querySelectorAll('.gif-item');
+            gifItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const gifSrc = this.dataset.src;
+                    
+                    // Create message content with GIF
+                    const messageContent = `<img src="${gifSrc}" alt="GIF" class="chat-gif">`;
+                    
+                    // Add to chat
+                    const messageElement = addMessageToChat('You', messageContent, 'sent');
+                    
+                    // Save to server
+                    const userName = getUserName();
+                    const deviceId = getOrCreateDeviceId();
+                    const userIdentifier = getUserIdentifier();
+                    
+                    fetch('/save_chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            sender: 'You',
+                            message: messageContent,
+                            user_name: userName,
+                            device_id: deviceId,
+                            user_identifier: userIdentifier,
+                            message_type: 'gif'
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success' && data.message && data.message.id) {
+                            // Store the message ID
+                            messageElement.dataset.messageId = data.message.id;
+                            
+                            // Add delete button only (can't edit GIFs)
+                            const messageActions = document.createElement('div');
+                            messageActions.classList.add('message-actions');
+                            
+                            // Delete button
+                            const deleteButton = document.createElement('button');
+                            deleteButton.classList.add('message-action-btn', 'delete');
+                            deleteButton.textContent = 'Delete';
+                            deleteButton.addEventListener('click', function() {
+                                if (confirm('Are you sure you want to delete this GIF?')) {
+                                    deleteMessage(data.message.id, messageElement);
+                                }
+                            });
+                            messageActions.appendChild(deleteButton);
+                            
+                            messageElement.appendChild(messageActions);
+                        }
+                    });
+                    
+                    // Close the picker
+                    gifPicker.remove();
+                });
+            });
+        });
+    }
+    
+    // Setup sticker button click handler
+    const stickerButton = document.getElementById('sticker-button');
+    if (stickerButton) {
+        stickerButton.addEventListener('click', function() {
+            // Simple sticker picker
+            const stickerPicker = document.createElement('div');
+            stickerPicker.classList.add('sticker-picker');
+            stickerPicker.innerHTML = `
+                <div class="sticker-picker-header">
+                    <h4>Select a Sticker</h4>
+                    <button class="close-sticker-picker">&times;</button>
+                </div>
+                <div class="sticker-picker-content">
+                    <div class="sticker-item" data-sticker="❤️">❤️</div>
+                    <div class="sticker-item" data-sticker="😊">😊</div>
+                    <div class="sticker-item" data-sticker="😂">😂</div>
+                    <div class="sticker-item" data-sticker="👍">👍</div>
+                    <div class="sticker-item" data-sticker="🎉">🎉</div>
+                    <div class="sticker-item" data-sticker="🌟">🌟</div>
+                    <div class="sticker-item" data-sticker="🐰">🐰</div>
+                    <div class="sticker-item" data-sticker="🌈">🌈</div>
+                    <div class="sticker-item" data-sticker="🍕">🍕</div>
+                    <div class="sticker-item" data-sticker="🌸">🌸</div>
+                    <div class="sticker-item" data-sticker="🌿">🌿</div>
+                    <div class="sticker-item" data-sticker="🦄">🦄</div>
+                </div>
+            `;
+            
+            // Add to chat container
+            document.body.appendChild(stickerPicker);
+            
+            // Set up close button
+            const closeButton = stickerPicker.querySelector('.close-sticker-picker');
+            closeButton.addEventListener('click', function() {
+                stickerPicker.remove();
+            });
+            
+            // Set up sticker selection
+            const stickerItems = stickerPicker.querySelectorAll('.sticker-item');
+            stickerItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const sticker = this.dataset.sticker;
+                    
+                    // Create message content with large sticker
+                    const messageContent = `<span class="chat-sticker">${sticker}</span>`;
+                    
+                    // Add to chat
+                    const messageElement = addMessageToChat('You', messageContent, 'sent');
+                    
+                    // Save to server
+                    const userName = getUserName();
+                    const deviceId = getOrCreateDeviceId();
+                    const userIdentifier = getUserIdentifier();
+                    
+                    fetch('/save_chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            sender: 'You',
+                            message: messageContent,
+                            user_name: userName,
+                            device_id: deviceId,
+                            user_identifier: userIdentifier,
+                            message_type: 'sticker'
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success' && data.message && data.message.id) {
+                            // Store the message ID
+                            messageElement.dataset.messageId = data.message.id;
+                            
+                            // Add delete button only (can't edit stickers)
+                            const messageActions = document.createElement('div');
+                            messageActions.classList.add('message-actions');
+                            
+                            // Delete button
+                            const deleteButton = document.createElement('button');
+                            deleteButton.classList.add('message-action-btn', 'delete');
+                            deleteButton.textContent = 'Delete';
+                            deleteButton.addEventListener('click', function() {
+                                if (confirm('Are you sure you want to delete this sticker?')) {
+                                    deleteMessage(data.message.id, messageElement);
+                                }
+                            });
+                            messageActions.appendChild(deleteButton);
+                            
+                            messageElement.appendChild(messageActions);
+                        }
+                    });
+                    
+                    // Close the picker
+                    stickerPicker.remove();
+                });
+            });
         });
     }
 });
