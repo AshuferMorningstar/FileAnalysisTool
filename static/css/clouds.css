@@ -14,17 +14,18 @@
     position: absolute;
     width: 200px;
     height: 60px;
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 200px;
     animation: float-cloud linear infinite;
     opacity: 0;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
 }
 
 .cloud::before,
 .cloud::after {
     content: '';
     position: absolute;
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.8);
     width: 100px;
     height: 80px;
     top: -15px;
@@ -89,11 +90,11 @@
         opacity: 0;
         transform: translateX(-100%);
     }
-    10% {
-        opacity: 0.6;
+    5% {
+        opacity: 0.8;
     }
     90% {
-        opacity: 0.6;
+        opacity: 0.8;
     }
     100% {
         opacity: 0;
@@ -114,5 +115,6 @@
 .birthday-page .cloud,
 .birthday-page .cloud::before,
 .birthday-page .cloud::after {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
 }
