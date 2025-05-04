@@ -854,18 +854,72 @@ document.addEventListener('DOMContentLoaded', function() {
                 chatMessages.innerHTML = '';
                 
                 if (data.status === 'success') {
-                    // If there are no messages, show a welcome message
-                    if (data.messages.length === 0) {
-                        // Use the new addMessageToChat function with the WhatsApp-style format
-                        addMessageToChat(
-                            'Bunny', 
-                            "Hello! I'm Bunny, your friendly chat companion! 🐰 Messages you send here will be received by Louise's creator. Feel free to leave any thoughts or messages!", 
-                            'received',
-                            new Date(), // current timestamp
-                            null, // no message ID for welcome message
-                            'Bunny' // username to display
-                        );
-                    } else {
+                    // Check if we need to show a welcome message
+                    // First, check if the user has seen the welcome message before
+                    const hasSeenWelcome = localStorage.getItem('has_seen_welcome') === 'true';
+                    
+                    // Check if there's a welcome message in the existing messages
+                    const hasWelcomeMessage = data.messages.some(msg => 
+                        msg.sender === 'Bunny' && 
+                        msg.content.includes("I'm Bunny, your friendly chat companion")
+                    );
+                    
+                    // Show welcome message only if: 
+                    // 1. There are no messages OR
+                    // 2. This is the first time the user is seeing the chat AND there's no welcome message
+                    if (data.messages.length === 0 || (!hasSeenWelcome && !hasWelcomeMessage)) {
+                        // Create the welcome message content
+                        const welcomeMessage = "Hello! I'm Bunny, your friendly chat companion! 🐰 Messages you send here will be received by Louise's creator. Feel free to leave any thoughts or messages!";
+                        
+                        // Save that this user has seen the welcome message
+                        localStorage.setItem('has_seen_welcome', 'true');
+                        
+                        // If there are no messages, just show the welcome message locally
+                        if (data.messages.length === 0) {
+                            addMessageToChat(
+                                'Bunny', 
+                                welcomeMessage, 
+                                'received',
+                                new Date(), 
+                                null, 
+                                'Bunny' 
+                            );
+                        } else {
+                            // If there are messages but no welcome message, save it to the database
+                            fetch('/save_chat', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    sender: 'Bunny',
+                                    message: welcomeMessage,
+                                    user_name: 'Bunny',
+                                    device_id: 'system',
+                                    user_identifier: 'system_bunny',
+                                    message_type: 'welcome'
+                                }),
+                            })
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.status === 'success') {
+                                    // Add the welcome message to the chat with its ID
+                                    addMessageToChat(
+                                        'Bunny', 
+                                        welcomeMessage, 
+                                        'received',
+                                        new Date(),
+                                        result.message.id,
+                                        'Bunny',
+                                        'system_bunny'
+                                    );
+                                }
+                            });
+                        }
+                    }
+                    
+                    // Process existing messages
+                    if (data.messages.length > 0) {
                         // Get the current user's identifier
                         const currentUserIdentifier = getUserIdentifier();
                         
