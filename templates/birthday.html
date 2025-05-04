@@ -69,6 +69,51 @@
         cake.addEventListener('click', function(e) {
             // Create firework burst effect
             for (let i = 0; i < 30; i++) {
+                // Define createFirework function if it doesn't exist
+                if (typeof createFirework !== 'function') {
+                    window.createFirework = function(x, y) {
+                        if (!x || !y) return;
+                        
+                        // Simple firework effect
+                        const particle = document.createElement('div');
+                        particle.style.position = 'fixed';
+                        particle.style.left = `${x}px`;
+                        particle.style.top = `${y}px`;
+                        particle.style.width = '8px';
+                        particle.style.height = '8px';
+                        particle.style.borderRadius = '50%';
+                        particle.style.pointerEvents = 'none';
+                        
+                        // Random color
+                        const colors = ['#ff69b4', '#8a2be2', '#ffd700', '#ffffff'];
+                        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        
+                        // Random direction
+                        const angle = Math.random() * Math.PI * 2;
+                        const speed = Math.random() * 100 + 50;
+                        const vx = Math.cos(angle) * speed;
+                        const vy = Math.sin(angle) * speed;
+                        
+                        // Set animation
+                        particle.style.transform = 'translate(-50%, -50%)';
+                        particle.style.transition = 'all 1s ease-out';
+                        
+                        document.body.appendChild(particle);
+                        
+                        // Animate particle
+                        setTimeout(() => {
+                            particle.style.transform = `translate(calc(-50% + ${vx}px), calc(-50% + ${vy}px))`;
+                            particle.style.opacity = '0';
+                        }, 10);
+                        
+                        // Remove particle after animation
+                        setTimeout(() => {
+                            particle.remove();
+                        }, 1000);
+                    };
+                }
+                
+                // Call the createFirework function
                 createFirework(e.clientX, e.clientY);
             }
             

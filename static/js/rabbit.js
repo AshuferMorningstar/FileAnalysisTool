@@ -70,37 +70,50 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to make the rabbit peek
     function showRabbit(message) {
-        const rabbit = document.getElementById('rabbit-helper') || createRabbit().container;
-        const speech = document.getElementById('rabbit-speech');
-        
-        // Set the speech bubble text if provided
-        if (message && speech) {
-            speech.textContent = message;
-            setTimeout(() => {
-                speech.classList.add('show');
-            }, 500);
-        }
-        
-        // Make the rabbit peek
-        rabbit.classList.add('rabbit-peek');
-        rabbit.classList.add('interactive');
-        
-        // Animate the ears
-        const ears = document.querySelectorAll('.rabbit-ear');
-        ears.forEach(ear => {
-            ear.style.animation = 'ear-twitch 0.5s ease-in-out';
-            ear.style.transformOrigin = 'bottom center';
+        try {
+            const rabbit = document.getElementById('rabbit-helper') || createRabbit().container;
+            const speech = document.getElementById('rabbit-speech');
             
-            // Remove the animation after it completes so it can be triggered again
-            setTimeout(() => {
-                ear.style.animation = '';
-            }, 500);
-        });
-        
-        // Hide the rabbit after a delay
-        setTimeout(hideRabbit, message ? 5000 : 3000);
-        
-        return rabbit;
+            // Set the speech bubble text if provided
+            if (message && speech) {
+                speech.textContent = message;
+                setTimeout(() => {
+                    speech.classList.add('show');
+                }, 500);
+            }
+            
+            // Make the rabbit peek
+            rabbit.classList.add('rabbit-peek');
+            rabbit.classList.add('interactive');
+            
+            // Animate the ears - with error handling
+            try {
+                const ears = document.querySelectorAll('.rabbit-ear');
+                if (ears && ears.length > 0) {
+                    ears.forEach(ear => {
+                        if (ear) {
+                            ear.style.animation = 'ear-twitch 0.5s ease-in-out';
+                            ear.style.transformOrigin = 'bottom center';
+                            
+                            // Remove the animation after it completes so it can be triggered again
+                            setTimeout(() => {
+                                if (ear) ear.style.animation = '';
+                            }, 500);
+                        }
+                    });
+                }
+            } catch (earError) {
+                console.log('Error animating rabbit ears: ' + earError.message);
+            }
+            
+            // Hide the rabbit after a delay
+            setTimeout(hideRabbit, message ? 5000 : 3000);
+            
+            return rabbit;
+        } catch (e) {
+            console.log('Error showing rabbit: ' + e.message);
+            return null;
+        }
     }
     
     // Function to hide the rabbit

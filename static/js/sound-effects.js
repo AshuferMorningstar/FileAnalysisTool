@@ -43,13 +43,19 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Play a sound
         play: function(soundName) {
-            if (this.audioElements[soundName]) {
-                // Reset sound to beginning
-                this.audioElements[soundName].currentTime = 0;
-                this.audioElements[soundName].play().catch(e => {
-                    // Ignore errors - they commonly happen when user hasn't interacted with the page yet
-                    console.log("Sound couldn't play yet: " + e.message);
-                });
+            try {
+                if (this.audioElements[soundName]) {
+                    // Reset sound to beginning
+                    this.audioElements[soundName].currentTime = 0;
+                    this.audioElements[soundName].play().catch(e => {
+                        // Ignore errors - they commonly happen when user hasn't interacted with the page yet
+                        console.log("Sound couldn't play yet: " + e.message);
+                    });
+                } else {
+                    console.log("Sound not found: " + soundName);
+                }
+            } catch (e) {
+                console.log("Error playing sound: " + e.message);
             }
         }
     };
