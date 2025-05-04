@@ -97,25 +97,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const audioUploadBtn = document.getElementById('audio-upload');
     const fileInput = document.getElementById('file-input');
     
-    // Create GIF and sticker buttons
-    const gifButton = document.createElement('button');
-    gifButton.id = 'gif-button';
-    gifButton.className = 'chat-action-button';
-    gifButton.innerHTML = '<span>GIF</span>';
-    gifButton.title = 'Send a GIF';
-    
-    const stickerButton = document.createElement('button');
-    stickerButton.id = 'sticker-button';
-    stickerButton.className = 'chat-action-button';
-    stickerButton.innerHTML = '<span>😊</span>';
-    stickerButton.title = 'Send a sticker';
-    
-    // Add new buttons to the chat input area
-    const chatActionButtons = document.querySelector('.chat-action-buttons');
-    if (chatActionButtons) {
-        chatActionButtons.appendChild(gifButton);
-        chatActionButtons.appendChild(stickerButton);
-    }
+    // Get GIF and sticker buttons
+    const gifButton = document.getElementById('gif-button');
+    const stickerButton = document.getElementById('sticker-button');
     
     // Toggle chat visibility with animation
     chatButton.addEventListener('click', function() {
@@ -1328,7 +1312,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Setup GIF button click handler
-    const gifButton = document.getElementById('gif-button');
     if (gifButton) {
         gifButton.addEventListener('click', function() {
             // For now, we'll add a simple GIF picker with a few pre-selected GIFs
@@ -1428,7 +1411,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Setup sticker button click handler
-    const stickerButton = document.getElementById('sticker-button');
     if (stickerButton) {
         stickerButton.addEventListener('click', function() {
             // Simple sticker picker
