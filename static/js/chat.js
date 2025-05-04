@@ -30,7 +30,7 @@ function getOrCreateDeviceId() {
     let deviceId = localStorage.getItem('chat_device_id');
     if (!deviceId) {
         // Generate a random ID
-        deviceId = 'device_' + Math.random().toString(36).substring(2, 15);
+        deviceId = 'device_' + Math.random().toString(36).substring(2, 15) + '_' + Date.now();
         localStorage.setItem('chat_device_id', deviceId);
     }
     return deviceId;
@@ -44,6 +44,26 @@ function getUserName() {
 // Save the user name to localStorage
 function saveUserName(name) {
     localStorage.setItem('chat_user_name', name);
+    // When username changes, update the user_identifier as well
+    generateUserIdentifier();
+}
+
+// Generate a unique identifier that combines device ID and username
+function generateUserIdentifier() {
+    const deviceId = getOrCreateDeviceId();
+    const userName = getUserName() || 'anonymous';
+    const identifier = `${userName}_${deviceId}`;
+    localStorage.setItem('user_identifier', identifier);
+    return identifier;
+}
+
+// Get the current user identifier or generate one
+function getUserIdentifier() {
+    let identifier = localStorage.getItem('user_identifier');
+    if (!identifier) {
+        identifier = generateUserIdentifier();
+    }
+    return identifier;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -529,6 +549,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Get user information
             const userName = getUserName();
             const deviceId = getOrCreateDeviceId();
+            const userIdentifier = getUserIdentifier();
             
             // Save message to server
             fetch('/save_chat', {
@@ -541,6 +562,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     message: message,
                     user_name: userName,
                     device_id: deviceId,
+                    user_identifier: userIdentifier,
                     message_type: 'text'
                 }),
             })
@@ -645,7 +667,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Function to add message to chat UI with improved animations
-    function addMessageToChat(sender, message, type, timestamp = null, messageId = null, userName = null) {
+    function addMessageToChat(sender, message, type, timestamp = null, messageId = null, userName = null, userIdentifier = null) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('chat-message', type);
         
@@ -654,17 +676,26 @@ document.addEventListener('DOMContentLoaded', function() {
             messageElement.dataset.messageId = messageId;
         }
         
+        // Store the user identifier if provided
+        if (userIdentifier) {
+            messageElement.dataset.userIdentifier = userIdentifier;
+        }
+        
+        // Determine if the message is from the current user
+        const currentUserIdentifier = getUserIdentifier();
+        const isCurrentUser = (userIdentifier && userIdentifier === currentUserIdentifier);
+        
         // Get display name - use the passed userName if available
         let displayName;
-        if (type === 'sent') {
-            // For sent messages, use the user's actual name, or "You" if not set
-            displayName = getUserName() || 'You';
+        if (type === 'sent' || isCurrentUser) {
+            // For sent messages from this device, show "You"
+            displayName = isCurrentUser ? 'You' : (userName || 'User');
             // Store the real username in the message data
             if (getUserName()) {
                 messageElement.dataset.userName = getUserName();
             }
         } else {
-            // For received messages, show the real username if available (from admin/creator)
+            // For received messages, show the real username of the other person
             displayName = userName || 'Louise';
         }
         
