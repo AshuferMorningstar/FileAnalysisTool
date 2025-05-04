@@ -5,6 +5,27 @@ function formatTimestamp(date) {
     return `${hours}:${minutes}`;
 }
 
+// Function to generate a device ID and store it in localStorage
+function getOrCreateDeviceId() {
+    let deviceId = localStorage.getItem('chat_device_id');
+    if (!deviceId) {
+        // Generate a random ID
+        deviceId = 'device_' + Math.random().toString(36).substring(2, 15);
+        localStorage.setItem('chat_device_id', deviceId);
+    }
+    return deviceId;
+}
+
+// Function to get the user name from localStorage or ask for it
+function getUserName() {
+    return localStorage.getItem('chat_user_name') || null;
+}
+
+// Save the user name to localStorage
+function saveUserName(name) {
+    localStorage.setItem('chat_user_name', name);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Chat elements
     const chatButton = document.getElementById('chat-button');
@@ -14,8 +35,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatInput = document.getElementById('chat-input');
     const sendChat = document.getElementById('send-chat');
     
+    // User name modal elements
+    const userNameModal = document.getElementById('user-name-modal');
+    const userNameInput = document.getElementById('user-name-input');
+    const saveUserNameBtn = document.getElementById('save-user-name');
+    
+    // File upload elements
+    const photoUploadBtn = document.getElementById('photo-upload');
+    const audioUploadBtn = document.getElementById('audio-upload');
+    const fileInput = document.getElementById('file-input');
+    
     // Toggle chat visibility with animation
     chatButton.addEventListener('click', function() {
+        // Check if we have a username first
+        if (!getUserName()) {
+            // Show the username modal
+            userNameModal.classList.add('show');
+            setTimeout(() => {
+                userNameInput.focus();
+            }, 300);
+            return;
+        }
+        
         chatContainer.classList.toggle('d-none');
         
         if (!chatContainer.classList.contains('d-none')) {
@@ -34,6 +75,33 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Load chat history from server
             loadChatHistory();
+        }
+    });
+    
+    // Save user name
+    saveUserNameBtn.addEventListener('click', function() {
+        const name = userNameInput.value.trim();
+        if (name) {
+            saveUserName(name);
+            userNameModal.classList.remove('show');
+            
+            // Now open the chat
+            setTimeout(() => {
+                chatButton.click();
+            }, 300);
+        } else {
+            // Shake the input to indicate error
+            userNameInput.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+                userNameInput.style.animation = '';
+            }, 500);
+        }
+    });
+    
+    // Let user press Enter to save name
+    userNameInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            saveUserNameBtn.click();
         }
     });
     
@@ -77,6 +145,185 @@ document.addEventListener('DOMContentLoaded', function() {
     chatInput.addEventListener('blur', function() {
         this.style.transform = 'scale(1)';
         this.style.boxShadow = 'none';
+    });
+    
+    // File upload handlers
+    photoUploadBtn.addEventListener('click', function() {
+        fileInput.setAttribute('accept', 'image/*');
+        fileInput.click();
+    });
+    
+    audioUploadBtn.addEventListener('click', function() {
+        fileInput.setAttribute('accept', 'audio/*');
+        fileInput.click();
+    });
+    
+    fileInput.addEventListener('change', function(e) {
+        if (this.files && this.files.length > 0) {
+            const file = this.files[0];
+            
+            // Create FormData to send file
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            // Show loading indicator in chat
+            const loadingMsg = addMessageToChat('You', 'Uploading file...', 'sent');
+            
+            // Upload file to server
+            fetch('/upload_file', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Remove loading message
+                    loadingMsg.remove();
+                    
+                    // Determine file type
+                    const fileType = data.file.type;
+                    const filePath = data.file.path;
+                    const fileUrl = data.file.url;
+                    
+                    // Create content message based on file type
+                    let messageContent;
+                    let messageType;
+                    
+                    if (fileType === 'image') {
+                        messageContent = `<img src="${fileUrl}" alt="Shared image" class="chat-image">`;
+                        messageType = 'image';
+                    } else if (fileType === 'audio') {
+                        messageContent = `<audio controls src="${fileUrl}" class="chat-audio"></audio>`;
+                        messageType = 'audio';
+                    } else {
+                        messageContent = `File uploaded: <a href="${fileUrl}" target="_blank">${file.name}</a>`;
+                        messageType = 'file';
+                    }
+                    
+                    // Add message to chat UI
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('chat-message', 'sent');
+                    
+                    const bubbleElement = document.createElement('div');
+                    bubbleElement.classList.add('chat-bubble');
+                    
+                    // Set inner HTML instead of text content for HTML elements
+                    bubbleElement.innerHTML = messageContent;
+                    
+                    // Create sender element with timestamp
+                    const senderElement = document.createElement('div');
+                    senderElement.classList.add('chat-sender');
+                    
+                    // Add sender name (current user)
+                    const senderName = document.createElement('span');
+                    senderName.textContent = 'You';
+                    senderElement.appendChild(senderName);
+                    
+                    // Add timestamp
+                    const timeElement = document.createElement('span');
+                    timeElement.classList.add('chat-time');
+                    timeElement.textContent = formatTimestamp(new Date());
+                    senderElement.appendChild(timeElement);
+                    
+                    messageElement.appendChild(bubbleElement);
+                    messageElement.appendChild(senderElement);
+                    chatMessages.appendChild(messageElement);
+                    
+                    // Save the message to the database
+                    const userName = getUserName();
+                    const deviceId = getOrCreateDeviceId();
+                    
+                    fetch('/save_chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            sender: 'You',
+                            message: messageContent,
+                            user_name: userName,
+                            device_id: deviceId,
+                            message_type: messageType,
+                            file_path: filePath
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success' && data.message && data.message.id) {
+                            // Store the message ID
+                            messageElement.dataset.messageId = data.message.id;
+                            
+                            // Add delete button only (can't edit files)
+                            const messageActions = document.createElement('div');
+                            messageActions.classList.add('message-actions');
+                            
+                            // Delete button
+                            const deleteButton = document.createElement('button');
+                            deleteButton.classList.add('message-action-btn', 'delete');
+                            deleteButton.textContent = 'Delete';
+                            deleteButton.addEventListener('click', function() {
+                                if (confirm('Are you sure you want to delete this file?')) {
+                                    deleteMessage(data.message.id, messageElement);
+                                }
+                            });
+                            messageActions.appendChild(deleteButton);
+                            
+                            messageElement.appendChild(messageActions);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error saving file message:', error);
+                    });
+                    
+                    // Scroll to the bottom
+                    chatMessages.scrollTo({
+                        top: chatMessages.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Reset file input
+                    fileInput.value = '';
+                } else {
+                    // Show error
+                    console.error('File upload failed:', data.message);
+                    loadingMsg.remove();
+                    
+                    // Add error message to chat
+                    const errorMsg = document.createElement('div');
+                    errorMsg.textContent = 'File upload failed. Please try again.';
+                    errorMsg.style.color = '#dc3545';
+                    errorMsg.style.fontSize = '0.8rem';
+                    errorMsg.style.textAlign = 'center';
+                    errorMsg.style.padding = '5px';
+                    
+                    chatMessages.appendChild(errorMsg);
+                    
+                    // Remove error message after a delay
+                    setTimeout(() => {
+                        errorMsg.remove();
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error uploading file:', error);
+                loadingMsg.remove();
+                
+                // Add error message to chat
+                const errorMsg = document.createElement('div');
+                errorMsg.textContent = 'Error uploading file. Please try again.';
+                errorMsg.style.color = '#dc3545';
+                errorMsg.style.fontSize = '0.8rem';
+                errorMsg.style.textAlign = 'center';
+                errorMsg.style.padding = '5px';
+                
+                chatMessages.appendChild(errorMsg);
+                
+                // Remove error message after a delay
+                setTimeout(() => {
+                    errorMsg.remove();
+                }, 3000);
+            });
+        }
     });
     
     // Create typing indicator
@@ -130,6 +377,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show typing indicator
             const typingIndicator = showTypingIndicator();
             
+            // Get user information
+            const userName = getUserName();
+            const deviceId = getOrCreateDeviceId();
+            
             // Save message to server
             fetch('/save_chat', {
                 method: 'POST',
@@ -138,7 +389,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify({
                     sender: 'You',
-                    message: message
+                    message: message,
+                    user_name: userName,
+                    device_id: deviceId,
+                    message_type: 'text'
                 }),
             })
             .then(response => response.json())

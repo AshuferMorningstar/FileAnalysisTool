@@ -36,6 +36,9 @@ db.init_app(app)
 with app.app_context():
     from models import Message, Compliment, BirthdayMessage, ChatMessage
     
+    # Drop ChatMessage table to recreate with new columns
+    ChatMessage.__table__.drop(db.engine, checkfirst=True)
+    
     # Initialize database tables
     db.create_all()
     
@@ -222,10 +225,20 @@ def save_chat():
     
     if not data or 'sender' not in data or 'message' not in data:
         return jsonify({"status": "error", "message": "Invalid data"}), 400
+    
+    # Get user name and device ID if provided
+    user_name = data.get('user_name', 'Anonymous')
+    device_id = data.get('device_id', str(uuid.uuid4()))
+    message_type = data.get('message_type', 'text')
+    file_path = data.get('file_path', None)
         
     new_message = ChatMessage(
         sender=data['sender'],
-        content=data['message']
+        content=data['message'],
+        user_name=user_name,
+        device_id=device_id,
+        message_type=message_type,
+        file_path=file_path
     )
     
     db.session.add(new_message)
@@ -237,7 +250,11 @@ def save_chat():
             "id": new_message.id,
             "sender": new_message.sender,
             "content": new_message.content,
-            "timestamp": new_message.timestamp.isoformat()
+            "timestamp": new_message.timestamp.isoformat(),
+            "user_name": new_message.user_name,
+            "device_id": new_message.device_id,
+            "message_type": new_message.message_type,
+            "file_path": new_message.file_path
         }
     })
     
@@ -251,7 +268,11 @@ def get_chat_history():
         "id": msg.id,
         "sender": msg.sender,
         "content": msg.content,
-        "timestamp": msg.timestamp.isoformat()
+        "timestamp": msg.timestamp.isoformat(),
+        "user_name": msg.user_name,
+        "device_id": msg.device_id,
+        "message_type": msg.message_type,
+        "file_path": msg.file_path
     } for msg in messages]
     
     return jsonify({"status": "success", "messages": message_list})
@@ -311,7 +332,53 @@ def delete_chat():
         "status": "success",
         "message": "Message deleted successfully"
     })
+
+# Create uploads directory if it doesn't exist
+uploads_dir = os.path.join(app.root_path, 'static/uploads')
+if not os.path.exists(uploads_dir):
+    os.makedirs(uploads_dir)
     
+@app.route("/upload_file", methods=["POST"])
+def upload_file():
+    """Upload a file (image or audio)"""
+    if 'file' not in request.files:
+        return jsonify({"status": "error", "message": "No file part"}), 400
+        
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({"status": "error", "message": "No selected file"}), 400
+    
+    # Determine file type
+    file_type = None
+    if file.content_type.startswith('image/'):
+        file_type = 'image'
+    elif file.content_type.startswith('audio/'):
+        file_type = 'audio'
+    else:
+        return jsonify({"status": "error", "message": "Unsupported file type"}), 400
+    
+    # Create a unique filename to prevent collisions
+    original_filename = werkzeug.utils.secure_filename(file.filename)
+    file_extension = os.path.splitext(original_filename)[1]
+    unique_filename = f"{uuid.uuid4()}{file_extension}"
+    
+    # Save the file
+    file_path = os.path.join(uploads_dir, unique_filename)
+    file.save(file_path)
+    
+    # Get the relative path for storing in the database and serving
+    relative_path = f"uploads/{unique_filename}"
+    
+    return jsonify({
+        "status": "success",
+        "file": {
+            "path": relative_path,
+            "type": file_type,
+            "url": url_for('static', filename=relative_path, _external=True)
+        }
+    })
+
 @app.route("/birthday-preview")
 def birthday_preview():
     """A special route to preview the birthday page any time"""
