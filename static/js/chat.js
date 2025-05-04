@@ -1319,7 +1319,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Add profile picture setup when settings are opened
-    const chatSettingsBtn = document.getElementById('chat-settings');
+    // Use the existing chatSettingsBtn from earlier in the code
     if (chatSettingsBtn) {
         chatSettingsBtn.addEventListener('click', function() {
             // Add a delay to make sure the settings modal is created
@@ -1340,17 +1340,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="close-gif-picker">&times;</button>
                 </div>
                 <div class="gif-picker-content">
-                    <div class="gif-item" data-src="/static/images/gifs/happy.gif">
-                        <img src="/static/images/gifs/happy.gif" alt="Happy GIF">
+                    <div class="gif-item" data-src="/static/images/gifs/happy.svg">
+                        <img src="/static/images/gifs/happy.svg" alt="Happy GIF">
                     </div>
-                    <div class="gif-item" data-src="/static/images/gifs/sad.gif">
-                        <img src="/static/images/gifs/sad.gif" alt="Sad GIF">
+                    <div class="gif-item" data-src="/static/images/gifs/sad.svg">
+                        <img src="/static/images/gifs/sad.svg" alt="Sad GIF">
                     </div>
-                    <div class="gif-item" data-src="/static/images/gifs/love.gif">
-                        <img src="/static/images/gifs/love.gif" alt="Love GIF">
+                    <div class="gif-item" data-src="/static/images/gifs/love.svg">
+                        <img src="/static/images/gifs/love.svg" alt="Love GIF">
                     </div>
-                    <div class="gif-item" data-src="/static/images/gifs/laugh.gif">
-                        <img src="/static/images/gifs/laugh.gif" alt="Laugh GIF">
+                    <div class="gif-item" data-src="/static/images/gifs/laugh.svg">
+                        <img src="/static/images/gifs/laugh.svg" alt="Laugh GIF">
                     </div>
                 </div>
             `;
