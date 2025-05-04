@@ -195,11 +195,8 @@ def get_birthday_message():
 
 @app.route("/")
 def home():
-    # For testing: Force today to be May 6th
-    # Comment out this line after testing
-    today = datetime(2025, 5, 6)
-    # Uncomment this line for normal operation
-    # today = datetime.now()
+    # Note: On May 6th, this will automatically display the birthday page
+    today = datetime.now()
     if today.month == 5 and today.day == 6:
         greeting = get_birthday_message()
         return render_template("birthday.html", greeting=greeting)
