@@ -112,7 +112,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Clear input
             chatInput.value = '';
             
-            // Add message to chat UI immediately with animation
+            // Add message to chat UI immediately with animation, but without edit/delete buttons yet
+            // We'll add those after we get confirmation from the server
             const messageElement = addMessageToChat('You', message, 'sent');
             messageElement.style.animation = 'fadeInUp 0.3s ease-out';
             
@@ -175,6 +176,43 @@ document.addEventListener('DOMContentLoaded', function() {
                                 notification.remove();
                             }, 500);
                         }, 2000);
+                        
+                        // Add messageId to the element for edit/delete functionality
+                        if (data.message && data.message.id) {
+                            // Store the message ID
+                            messageElement.dataset.messageId = data.message.id;
+                            
+                            // Add edit and delete buttons
+                            const messageActions = document.createElement('div');
+                            messageActions.classList.add('message-actions');
+                            
+                            // Edit button
+                            const editButton = document.createElement('button');
+                            editButton.classList.add('message-action-btn', 'edit');
+                            editButton.textContent = 'Edit';
+                            editButton.addEventListener('click', function() {
+                                // Find the bubble element
+                                const bubbleElement = messageElement.querySelector('.chat-bubble');
+                                if (bubbleElement) {
+                                    // Create and show edit form
+                                    createEditForm(messageElement, bubbleElement, message, data.message.id);
+                                }
+                            });
+                            messageActions.appendChild(editButton);
+                            
+                            // Delete button
+                            const deleteButton = document.createElement('button');
+                            deleteButton.classList.add('message-action-btn', 'delete');
+                            deleteButton.textContent = 'Delete';
+                            deleteButton.addEventListener('click', function() {
+                                if (confirm('Are you sure you want to delete this message?')) {
+                                    deleteMessage(data.message.id, messageElement);
+                                }
+                            });
+                            messageActions.appendChild(deleteButton);
+                            
+                            messageElement.appendChild(messageActions);
+                        }
                     }, 1500 + Math.random() * 1000); // Random delay to make it feel more natural
                 }
             })
@@ -204,9 +242,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Function to add message to chat UI with improved animations
-    function addMessageToChat(sender, message, type, timestamp = null) {
+    function addMessageToChat(sender, message, type, timestamp = null, messageId = null) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('chat-message', type);
+        
+        // If message ID is provided from database, store it as a data attribute
+        if (messageId) {
+            messageElement.dataset.messageId = messageId;
+        }
         
         const bubbleElement = document.createElement('div');
         bubbleElement.classList.add('chat-bubble');
@@ -261,6 +304,36 @@ document.addEventListener('DOMContentLoaded', function() {
         
         messageElement.appendChild(bubbleElement);
         messageElement.appendChild(senderElement);
+        
+        // Only add edit and delete buttons to sent messages (from the current user)
+        // And only if a message ID is provided (meaning it's a message from the database)
+        if (type === 'sent' && messageId) {
+            const messageActions = document.createElement('div');
+            messageActions.classList.add('message-actions');
+            
+            // Edit button
+            const editButton = document.createElement('button');
+            editButton.classList.add('message-action-btn', 'edit');
+            editButton.textContent = 'Edit';
+            editButton.addEventListener('click', function() {
+                // Create and show edit form
+                createEditForm(messageElement, bubbleElement, message, messageId);
+            });
+            messageActions.appendChild(editButton);
+            
+            // Delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('message-action-btn', 'delete');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', function() {
+                if (confirm('Are you sure you want to delete this message?')) {
+                    deleteMessage(messageId, messageElement);
+                }
+            });
+            messageActions.appendChild(deleteButton);
+            
+            messageElement.appendChild(messageActions);
+        }
         
         chatMessages.appendChild(messageElement);
         
@@ -349,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             // Delay each message slightly for a staggered effect
                             setTimeout(() => {
-                                addMessageToChat(item.sender, item.content, type, item.timestamp);
+                                addMessageToChat(item.sender, item.content, type, item.timestamp, item.id);
                                 
                                 // Make rabbit appear occasionally for received messages
                                 if (type === 'received' && Math.random() > 0.7) {
@@ -384,5 +457,160 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 chatMessages.appendChild(errorMsg);
             });
+    }
+    
+    // Function to create and show edit form for a message
+    function createEditForm(messageElement, bubbleElement, currentMessage, messageId) {
+        // Store the original message content
+        const originalContent = currentMessage;
+        
+        // Create the edit form
+        const editForm = document.createElement('form');
+        editForm.classList.add('edit-message-form');
+        
+        // Create the input field
+        const editInput = document.createElement('input');
+        editInput.classList.add('edit-message-input');
+        editInput.type = 'text';
+        editInput.value = originalContent;
+        editForm.appendChild(editInput);
+        
+        // Create the save button
+        const saveButton = document.createElement('button');
+        saveButton.classList.add('edit-message-save');
+        saveButton.type = 'button';
+        saveButton.textContent = 'Save';
+        editForm.appendChild(saveButton);
+        
+        // Create the cancel button
+        const cancelButton = document.createElement('button');
+        cancelButton.classList.add('edit-message-cancel');
+        cancelButton.type = 'button';
+        cancelButton.textContent = 'Cancel';
+        editForm.appendChild(cancelButton);
+        
+        // Hide the original bubble temporarily
+        bubbleElement.style.display = 'none';
+        
+        // Insert the edit form after the bubble
+        messageElement.insertBefore(editForm, bubbleElement.nextSibling);
+        
+        // Focus on the input field
+        editInput.focus();
+        
+        // Set up cancel button handler
+        cancelButton.addEventListener('click', function() {
+            // Remove the edit form
+            editForm.remove();
+            
+            // Show the original bubble again
+            bubbleElement.style.display = '';
+        });
+        
+        // Set up submit handler for the edit form
+        saveButton.addEventListener('click', function() {
+            const newMessage = editInput.value.trim();
+            
+            if (newMessage && newMessage !== originalContent) {
+                // Update the message in the database
+                updateMessage(messageId, newMessage, function(success) {
+                    if (success) {
+                        // Update the bubble content
+                        bubbleElement.textContent = newMessage;
+                        
+                        // Add a subtle animation to indicate the update
+                        bubbleElement.style.backgroundColor = '#e8f4ff';
+                        setTimeout(() => {
+                            bubbleElement.style.transition = 'background-color 1s ease';
+                            bubbleElement.style.backgroundColor = '';
+                        }, 50);
+                    }
+                });
+            }
+            
+            // Remove the edit form
+            editForm.remove();
+            
+            // Show the original bubble again
+            bubbleElement.style.display = '';
+        });
+        
+        // Handle enter key
+        editInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveButton.click();
+            }
+        });
+    }
+    
+    // Function to update a message in the database
+    function updateMessage(messageId, newContent, callback) {
+        fetch('/update_chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: messageId,
+                content: newContent
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                if (callback) callback(true);
+            } else {
+                console.error('Error updating message:', data.message);
+                alert('Error updating message: ' + data.message);
+                if (callback) callback(false);
+            }
+        })
+        .catch(error => {
+            console.error('Error updating message:', error);
+            alert('Error updating message. Please try again.');
+            if (callback) callback(false);
+        });
+    }
+    
+    // Function to delete a message from the database
+    function deleteMessage(messageId, messageElement) {
+        fetch('/delete_chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: messageId
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Add a removal animation
+                messageElement.style.transition = 'all 0.3s ease-out';
+                messageElement.style.opacity = '0';
+                messageElement.style.transform = 'translateX(30px)';
+                messageElement.style.height = messageElement.offsetHeight + 'px';
+                
+                setTimeout(() => {
+                    messageElement.style.height = '0';
+                    messageElement.style.marginTop = '0';
+                    messageElement.style.marginBottom = '0';
+                    messageElement.style.padding = '0';
+                    
+                    setTimeout(() => {
+                        messageElement.remove();
+                    }, 300);
+                }, 300);
+            } else {
+                console.error('Error deleting message:', data.message);
+                alert('Error deleting message: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting message:', error);
+            alert('Error deleting message. Please try again.');
+        });
     }
 });

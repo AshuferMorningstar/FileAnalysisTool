@@ -710,6 +710,75 @@ h1, h2, h3, h4, h5, h6 {
     margin-left: 10px;
 }
 
+.message-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 5px;
+    justify-content: flex-end;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.chat-message:hover .message-actions {
+    opacity: 1;
+}
+
+.message-action-btn {
+    background: none;
+    border: none;
+    font-size: 0.7rem;
+    color: #a0a0a0;
+    cursor: pointer;
+    padding: 3px 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.message-action-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #6c757d;
+}
+
+.message-action-btn.edit {
+    color: #007bff;
+}
+
+.message-action-btn.delete {
+    color: #dc3545;
+}
+
+.edit-message-form {
+    display: flex;
+    margin-top: 5px;
+    gap: 5px;
+}
+
+.edit-message-input {
+    flex: 1;
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+}
+
+.edit-message-save, .edit-message-cancel {
+    border: none;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.edit-message-save {
+    background-color: #28a745;
+    color: white;
+}
+
+.edit-message-cancel {
+    background-color: #6c757d;
+    color: white;
+}
+
 .chat-footer {
     padding: 10px;
     display: flex;

@@ -254,6 +254,62 @@ def get_chat_history():
     
     return jsonify({"status": "success", "messages": message_list})
     
+@app.route("/update_chat", methods=["POST"])
+def update_chat():
+    """Update a chat message in the database"""
+    data = request.json
+    
+    if not data or 'id' not in data or 'content' not in data:
+        return jsonify({"status": "error", "message": "Invalid data"}), 400
+        
+    message_id = data['id']
+    new_content = data['content']
+    
+    # Find the message
+    message = ChatMessage.query.get(message_id)
+    
+    if not message:
+        return jsonify({"status": "error", "message": "Message not found"}), 404
+        
+    # Update the message content
+    message.content = new_content
+    db.session.commit()
+    
+    return jsonify({
+        "status": "success",
+        "message": {
+            "id": message.id,
+            "sender": message.sender,
+            "content": message.content,
+            "timestamp": message.timestamp.isoformat()
+        }
+    })
+    
+@app.route("/delete_chat", methods=["POST"])
+def delete_chat():
+    """Delete a chat message from the database"""
+    data = request.json
+    
+    if not data or 'id' not in data:
+        return jsonify({"status": "error", "message": "Invalid data"}), 400
+        
+    message_id = data['id']
+    
+    # Find the message
+    message = ChatMessage.query.get(message_id)
+    
+    if not message:
+        return jsonify({"status": "error", "message": "Message not found"}), 404
+        
+    # Delete the message
+    db.session.delete(message)
+    db.session.commit()
+    
+    return jsonify({
+        "status": "success",
+        "message": "Message deleted successfully"
+    })
+    
 @app.route("/birthday-preview")
 def birthday_preview():
     """A special route to preview the birthday page any time"""
