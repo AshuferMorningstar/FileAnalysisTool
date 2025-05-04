@@ -704,6 +704,7 @@ def save_chat():
     # Get user name and device ID if provided
     user_name = data.get('user_name', 'Anonymous')
     device_id = data.get('device_id', str(uuid.uuid4()))
+    user_identifier = data.get('user_identifier', f"{user_name}_{device_id}")  # Get or create user identifier
     message_type = data.get('message_type', 'text')
     file_path = data.get('file_path', None)
         
@@ -712,6 +713,7 @@ def save_chat():
         content=data['message'],
         user_name=user_name,
         device_id=device_id,
+        user_identifier=user_identifier,
         message_type=message_type,
         file_path=file_path
     )
@@ -728,6 +730,7 @@ def save_chat():
             "timestamp": new_message.timestamp.isoformat(),
             "user_name": new_message.user_name,
             "device_id": new_message.device_id,
+            "user_identifier": new_message.user_identifier,
             "message_type": new_message.message_type,
             "file_path": new_message.file_path
         }
@@ -746,6 +749,7 @@ def get_chat_history():
         "timestamp": msg.timestamp.isoformat(),
         "user_name": msg.user_name,
         "device_id": msg.device_id,
+        "user_identifier": msg.user_identifier,
         "message_type": msg.message_type,
         "file_path": msg.file_path
     } for msg in messages]
@@ -782,6 +786,7 @@ def update_chat():
             "timestamp": message.timestamp.isoformat(),
             "user_name": message.user_name,
             "device_id": message.device_id,
+            "user_identifier": message.user_identifier,
             "message_type": message.message_type,
             "file_path": message.file_path
         }

@@ -27,5 +27,6 @@ class ChatMessage(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user_name = db.Column(db.String(100), nullable=True)
     device_id = db.Column(db.String(100), nullable=True)
+    user_identifier = db.Column(db.String(200), nullable=True)  # Combined username+device ID for uniquely identifying users
     message_type = db.Column(db.String(20), default='text')
     file_path = db.Column(db.String(200), nullable=True)
