@@ -1,0 +1,69 @@
+/* Stars Animation */
+.stars-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -2; /* Behind clouds */
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+    opacity: 0;
+    filter: blur(1px);
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+    animation: twinkle 3s infinite ease-in-out;
+}
+
+@keyframes twinkle {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+}
+
+/* Star colors for different page backgrounds */
+.welcome-page .star {
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 0 0 20px 6px rgba(138, 43, 226, 0.4);
+}
+
+.feelings-page .star {
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 0 0 20px 6px rgba(218, 112, 214, 0.4);
+}
+
+.happy-theme .star {
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 0 0 20px 6px rgba(76, 175, 80, 0.4);
+}
+
+.sad-theme .star {
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 0 0 20px 6px rgba(94, 129, 172, 0.4);
+}
+
+.lonely-theme .star {
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 0 0 20px 6px rgba(147, 112, 219, 0.4);
+}
+
+.overwhelmed-theme .star {
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 0 0 20px 6px rgba(229, 115, 115, 0.4);
+}
+
+.dontknow-theme .star {
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 0 0 20px 6px rgba(255, 183, 77, 0.4);
+}
+
+.birthday-page .star {
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 0 0 20px 6px rgba(255, 105, 180, 0.4);
+}
