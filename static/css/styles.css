@@ -1,16 +1,22 @@
-/* Base Styles */
+/* Base Styles - Floral Theme */
 :root {
-    --primary-color: #8a2be2;
-    --secondary-color: #da70d6;
+    --primary-color: #e08d95;        /* Soft Rose Pink */
+    --secondary-color: #ffc8dd;      /* Light Pink */
     --light-color: #f8f9fa;
-    --dark-color: #343a40;
-    --happy-color: #4caf50;
-    --sad-color: #5e81ac;
-    --lonely-color: #9370db;
-    --overwhelmed-color: #e57373;
-    --dontknow-color: #ffb74d;
-    --birthday-color: #ff69b4;
+    --dark-color: #5a5766;           /* Muted Purple-Gray */
+    --happy-color: #90be6d;          /* Sage Green */
+    --sad-color: #a4b8c4;            /* Dusty Blue */
+    --lonely-color: #c9b1bd;         /* Lavender */
+    --overwhelmed-color: #e9967a;    /* Peach */
+    --dontknow-color: #f1ca89;       /* Warm Beige */
+    --birthday-color: #ffafcc;       /* Soft Pink */
     --transition-time: 0.4s;
+    
+    /* Additional Floral Colors */
+    --floral-accent-1: #f2cc8f;      /* Muted Yellow */
+    --floral-accent-2: #bfd8b8;      /* Mint Green */
+    --floral-accent-3: #d8bfd8;      /* Thistle */
+    --floral-accent-4: #ddbea9;      /* Tan */
 }
 
 body {
@@ -127,7 +133,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Welcome Page */
 .welcome-page {
-    background: linear-gradient(135deg, #9370db, #8a2be2);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
 }
 
@@ -185,7 +191,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Feelings Page */
 .feelings-page {
-    background: linear-gradient(135deg, #da70d6, #8a2be2);
+    background: linear-gradient(135deg, var(--floral-accent-3), var(--lonely-color));
     color: white;
 }
 
@@ -195,13 +201,30 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .compliment-box {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
     border-radius: 15px;
     padding: 2rem;
     margin-bottom: 3rem;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.compliment-box::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        var(--floral-accent-3), 
+        var(--floral-accent-4), 
+        var(--floral-accent-1), 
+        var(--floral-accent-2));
+    opacity: 0.8;
 }
 
 .compliment {
@@ -276,41 +299,58 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--dontknow-color);
 }
 
-/* Response Page - Theme specific styles */
+/* Response Page - Theme specific styles - Floral Theme */
 .response-page {
     color: white;
     transition: background-color 0.5s ease;
 }
 
 .happy-theme {
-    background: linear-gradient(135deg, #66bb6a, #43a047);
+    background: linear-gradient(135deg, var(--happy-color), var(--floral-accent-2));
 }
 
 .sad-theme {
-    background: linear-gradient(135deg, #81a1c1, #5e81ac);
+    background: linear-gradient(135deg, var(--sad-color), var(--primary-color));
 }
 
 .lonely-theme {
-    background: linear-gradient(135deg, #b39ddb, #9370db);
+    background: linear-gradient(135deg, var(--lonely-color), var(--floral-accent-3));
 }
 
 .overwhelmed-theme {
-    background: linear-gradient(135deg, #ef9a9a, #e57373);
+    background: linear-gradient(135deg, var(--overwhelmed-color), var(--floral-accent-4));
 }
 
 .dontknow-theme {
-    background: linear-gradient(135deg, #ffcc80, #ffb74d);
+    background: linear-gradient(135deg, var(--dontknow-color), var(--floral-accent-1));
 }
 
 .message-box {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
     border-radius: 15px;
     padding: 2.5rem;
     margin-bottom: 3rem;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     animation: fadeInUp 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.message-box::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        var(--floral-accent-1), 
+        var(--floral-accent-2), 
+        var(--floral-accent-3), 
+        var(--floral-accent-4));
+    opacity: 0.8;
 }
 
 .message {
@@ -341,7 +381,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Birthday Page */
 .birthday-page {
-    background: linear-gradient(135deg, #ff69b4, #ff1493);
+    background: linear-gradient(135deg, var(--birthday-color), var(--primary-color));
     color: white;
 }
 
@@ -359,13 +399,30 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .birthday-message-box {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
     border-radius: 15px;
     padding: 2rem;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.birthday-message-box::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        var(--birthday-color), 
+        var(--floral-accent-2), 
+        var(--floral-accent-4), 
+        var(--primary-color));
+    opacity: 0.8;
 }
 
 .birthday-message {
