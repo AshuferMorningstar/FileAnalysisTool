@@ -854,16 +854,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 chatMessages.innerHTML = '';
                 
                 if (data.status === 'success') {
-                    // Check if we need to filter out duplicate welcome messages
-                    // Get only the first welcome message if multiple exist
+                    // Check if this user has seen the welcome message before
+                    const hasSeenWelcome = localStorage.getItem('has_seen_welcome') === 'true';
+                    
+                    // Look for welcome messages
                     const welcomeMessages = data.messages.filter(msg => 
                         msg.sender === 'Bunny' && 
                         msg.content.includes("I'm Bunny, your friendly chat companion")
                     );
                     
-                    // If we have welcome messages, keep only the first one and filter the others out
+                    // Filter out ALL welcome messages from the display for returning users
                     let messagesToDisplay = data.messages;
-                    if (welcomeMessages.length > 1) {
+                    
+                    // If user has seen welcome before, remove ALL welcome messages
+                    if (hasSeenWelcome) {
+                        messagesToDisplay = data.messages.filter(msg => 
+                            !(msg.sender === 'Bunny' && 
+                              msg.content.includes("I'm Bunny, your friendly chat companion"))
+                        );
+                        
+                        if (welcomeMessages.length > 0) {
+                            console.log(`Filtered out ${welcomeMessages.length} welcome messages for returning user`);
+                        }
+                    } 
+                    // For first-time users, only keep one welcome message if multiple exist
+                    else if (welcomeMessages.length > 1) {
                         // Keep the first welcome message, filter out the rest
                         const firstWelcomeId = welcomeMessages[0].id;
                         messagesToDisplay = data.messages.filter(msg => 
@@ -875,16 +890,26 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log(`Filtered out ${welcomeMessages.length - 1} duplicate welcome messages`);
                     }
                     
-                    // Mark that this user has seen the welcome message (regardless)
+                    // Mark that this user has seen the welcome message
                     localStorage.setItem('has_seen_welcome', 'true');
                     
-                    // Add welcome message only if there are no messages at all
-                    if (data.messages.length === 0) {
+                    // Add welcome message only for completely empty history AND first-time users
+                    if (data.messages.length === 0 && !hasSeenWelcome) {
                         // Create the welcome message content
                         const welcomeMessage = "Hello! I'm Bunny, your friendly chat companion! 🐰 Messages you send here will be received by Louise's creator. Feel free to leave any thoughts or messages!";
                         
-                        // If there are no messages, just show the welcome message locally
-                        // and save it to the database 
+                        // Show the message locally and save to database
+                        addMessageToChat(
+                            'Bunny', 
+                            welcomeMessage, 
+                            'received',
+                            new Date(),
+                            null,
+                            'Bunny',
+                            'system_bunny'
+                        );
+                        
+                        // Save welcome message to database
                         fetch('/save_chat', {
                             method: 'POST',
                             headers: {
@@ -902,16 +927,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         .then(response => response.json())
                         .then(result => {
                             if (result.status === 'success') {
-                                // Add the welcome message to the chat with its ID
-                                addMessageToChat(
-                                    'Bunny', 
-                                    welcomeMessage, 
-                                    'received',
-                                    new Date(),
-                                    result.message.id,
-                                    'Bunny',
-                                    'system_bunny'
-                                );
+                                // Update the message ID after saving
+                                const welcomeElements = document.querySelectorAll('.chat-message');
+                                if (welcomeElements.length > 0) {
+                                    const lastElement = welcomeElements[welcomeElements.length - 1];
+                                    lastElement.dataset.messageId = result.message.id;
+                                }
                             }
                         });
                     }
@@ -1564,8 +1585,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Function to show notification badge with count
-    function showNotificationBadge(count = '') {
+    // Function to show notification badge with count and message preview
+    function showNotificationBadge(count = '', latestMessage = null) {
         const badge = document.querySelector('.notification-badge');
         if (badge) {
             badge.style.display = 'flex';
@@ -1584,7 +1605,26 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Show the rabbit with notification message
             if (window.Rabbit && typeof window.Rabbit.say === 'function') {
-                if (count === 1) {
+                // If we have message details, show a WhatsApp-style notification with sender and preview
+                if (latestMessage && latestMessage.sender && latestMessage.content) {
+                    // Get the sender name
+                    const senderName = latestMessage.user_name || latestMessage.sender || 'Someone';
+                    
+                    // Truncate message content for preview (max 30 chars)
+                    let messagePreview = latestMessage.content;
+                    if (messagePreview.length > 30) {
+                        messagePreview = messagePreview.substring(0, 27) + '...';
+                    }
+                    
+                    // Create WhatsApp style notification: "Sender: Message preview"
+                    const notificationText = `${senderName}: ${messagePreview}`;
+                    
+                    setTimeout(() => {
+                        window.Rabbit.say(notificationText);
+                    }, 1000);
+                }
+                // Fallback to generic message if no details available
+                else if (count === 1) {
                     setTimeout(() => {
                         window.Rabbit.say("You have a new message!");
                     }, 1000);
@@ -1644,7 +1684,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         if (unreadMessages.length > 0) {
                             hasUnreadMessages = true;
-                            showNotificationBadge(unreadMessages.length);
+                            
+                            // Get the latest message for notification preview
+                            const latestMessage = unreadMessages.reduce((latest, current) => {
+                                if (!latest || new Date(current.timestamp) > new Date(latest.timestamp)) {
+                                    return current;
+                                }
+                                return latest;
+                            }, null);
+                            
+                            // Show notification with count and preview
+                            showNotificationBadge(unreadMessages.length, latestMessage);
                         }
                     }
                 })
@@ -1704,7 +1754,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         const chatContainer = document.getElementById('chat-container');
                         if (newMessageReceived && chatContainer && chatContainer.classList.contains('d-none')) {
                             hasUnreadMessages = true;
-                            showNotificationBadge(unreadCount);
+                            
+                            // Get the latest message for the notification preview
+                            const latestMessage = data.messages.reduce((latest, current) => {
+                                if (!latest || new Date(current.timestamp) > new Date(latest.timestamp)) {
+                                    return current;
+                                }
+                                return latest;
+                            }, null);
+                            
+                            // Show notification with count and message preview
+                            showNotificationBadge(unreadCount, latestMessage);
                         }
                     }
                 }
