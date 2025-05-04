@@ -1,35 +1,35 @@
-/* Base Styles - Floral Theme with Deeper Aesthetic Emotion Colors */
+/* Base Styles - Floral Theme with Vibrant Cheerful Colors */
 :root {
-    --primary-color: #d76c7e;        /* Deeper Rose Pink */
-    --secondary-color: #f5a8c0;      /* Medium Pink */
+    --primary-color: #ff6b8b;        /* Bright Coral Pink */
+    --secondary-color: #ffacc7;      /* Cheerful Pink */
     --light-color: #f8f9fa;
-    --dark-color: #4a4754;           /* Deeper Purple-Gray */
+    --dark-color: #4f4552;           /* Muted Purple-Gray */
     
-    /* Aesthetic Emotion Colors - Deeper for better text contrast */
-    --happy-color: #5b9d74;          /* Deep Sage Green - Serene, joyful */
-    --happy-gradient: #89b79b;       /* Medium sage for gradient */
+    /* Aesthetic Emotion Colors - Vibrant but still good text contrast */
+    --happy-color: #4fc978;          /* Bright Spring Green - Cheerful, joyful */
+    --happy-gradient: #8deaad;       /* Light vibrant green for gradient */
     
-    --sad-color: #5d89b3;            /* Deeper Blue - Calm, melancholy */
-    --sad-gradient: #7fa3c7;         /* Medium blue for gradient */
+    --sad-color: #5a9fd9;            /* Bright Sky Blue - Calm yet uplifting */
+    --sad-gradient: #89c4f7;         /* Light vibrant blue for gradient */
     
-    --lonely-color: #a56e96;         /* Deeper Mauve - Gentle, introspective */
-    --lonely-gradient: #c58fb6;      /* Medium mauve for gradient */
+    --lonely-color: #c76cb8;         /* Bright Orchid - Gentle yet vibrant */
+    --lonely-gradient: #e89fe0;      /* Light vibrant orchid for gradient */
     
-    --overwhelmed-color: #c27d60;    /* Deeper Terracotta - Warm, grounding */
-    --overwhelmed-gradient: #d89a7d;  /* Medium terracotta for gradient */
+    --overwhelmed-color: #ff8c5a;    /* Bright Coral - Warm, energizing */
+    --overwhelmed-gradient: #ffc29f;  /* Light vibrant coral for gradient */
     
-    --dontknow-color: #d9a45d;       /* Deeper Gold - Neutral, open */
-    --dontknow-gradient: #e5b979;    /* Medium gold for gradient */
+    --dontknow-color: #ffbd4a;       /* Bright Marigold - Cheerful, open */
+    --dontknow-gradient: #ffd989;    /* Light vibrant marigold for gradient */
     
-    --birthday-color: #f7749d;       /* Deeper Pink */
-    --birthday-gradient: #ff96b7;    /* Medium pink for gradient */
+    --birthday-color: #ff5a9d;       /* Bright Hot Pink */
+    --birthday-gradient: #ff9cc0;    /* Light vibrant pink for gradient */
     --transition-time: 0.4s;
     
-    /* Additional Floral Colors - Deeper for accent use */
-    --floral-accent-1: #e5b362;      /* Deeper Yellow */
-    --floral-accent-2: #8db580;      /* Deeper Mint Green */
-    --floral-accent-3: #b98cb9;      /* Deeper Thistle */
-    --floral-accent-4: #c29c79;      /* Deeper Tan */
+    /* Additional Floral Colors - Bright for accent use */
+    --floral-accent-1: #ffcb45;      /* Bright Sunflower Yellow */
+    --floral-accent-2: #7cd95f;      /* Bright Lime Green */
+    --floral-accent-3: #d67fff;      /* Bright Lavender */
+    --floral-accent-4: #ffaa6d;      /* Bright Peach */
 }
 
 body {
@@ -678,7 +678,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .chat-message.received .chat-bubble {
-    background-color: #f0e3f5;
+    background-color: #fff0f5;
     color: var(--dark-color);
     border-bottom-left-radius: 5px;
     border-left: 3px solid var(--primary-color);
