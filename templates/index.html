@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %} | Welcome{% endblock %}
+
+{% block body_class %}welcome-page{% endblock %}
+
+{% block container_class %}welcome-container{% endblock %}
+
+{% block content %}
+<div class="welcome-content text-center">
+    <h1 class="welcome-heading">Welcome Louise</h1>
+    <p class="welcome-subheading fade-in-delay">to your special place</p>
+    <div class="welcome-button-container fade-in-delay-2">
+        <a href="{{ url_for('feelings') }}" class="btn btn-primary welcome-button">
+            <span>Enter</span>
+            <i class="fas fa-heart ms-2"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Auto-redirect after 3 seconds
+    setTimeout(() => {
+        window.location.href = "{{ url_for('feelings') }}";
+    }, 5000);
+</script>
+{% endblock %}

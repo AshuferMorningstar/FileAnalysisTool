@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %} | How are you feeling?{% endblock %}
+
+{% block body_class %}feelings-page{% endblock %}
+
+{% block content %}
+<div class="compliment-container text-center">
+    <div class="compliment-box">
+        <h2 class="compliment">{{ compliment }}</h2>
+    </div>
+    
+    <div class="feelings-question-container">
+        <h3 class="feelings-question">How are you, Louise?</h3>
+        
+        <form action="{{ url_for('message') }}" method="post" class="feelings-form">
+            <div class="feelings-buttons">
+                <button type="submit" name="feeling" value="happy" class="btn btn-feeling happy-btn">
+                    <i class="fas fa-smile feeling-icon"></i>
+                    <span>Happy</span>
+                </button>
+                
+                <button type="submit" name="feeling" value="sad" class="btn btn-feeling sad-btn">
+                    <i class="fas fa-frown feeling-icon"></i>
+                    <span>Sad</span>
+                </button>
+                
+                <button type="submit" name="feeling" value="lonely" class="btn btn-feeling lonely-btn">
+                    <i class="fas fa-heart-broken feeling-icon"></i>
+                    <span>Lonely</span>
+                </button>
+                
+                <button type="submit" name="feeling" value="overwhelmed" class="btn btn-feeling overwhelmed-btn">
+                    <i class="fas fa-dizzy feeling-icon"></i>
+                    <span>Overwhelmed</span>
+                </button>
+                
+                <button type="submit" name="feeling" value="dontknow" class="btn btn-feeling dontknow-btn">
+                    <i class="fas fa-question feeling-icon"></i>
+                    <span>Don't Know</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

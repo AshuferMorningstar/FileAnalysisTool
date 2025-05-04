@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block title %} | Happy Birthday!{% endblock %}
+
+{% block body_class %}birthday-page{% endblock %}
+
+{% block head %}
+<style>
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #ff69b4;
+        opacity: 0.8;
+        border-radius: 50%;
+        animation: fall linear forwards;
+    }
+    
+    @keyframes fall {
+        to {
+            transform: translateY(100vh);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="birthday-container text-center">
+    <h1 class="birthday-heading">Happy Birthday Louise!</h1>
+    
+    <div class="birthday-message-box">
+        <h2 class="birthday-message">{{ greeting }}</h2>
+    </div>
+    
+    <div class="birthday-cake">
+        <svg viewBox="0 0 100 100" width="150" height="150">
+            <!-- Cake base -->
+            <rect x="20" y="70" width="60" height="20" rx="5" fill="#f9a8d4" />
+            <!-- Middle layer -->
+            <rect x="25" y="55" width="50" height="15" rx="3" fill="#fbcfe8" />
+            <!-- Top layer -->
+            <rect x="30" y="45" width="40" height="10" rx="2" fill="#f9a8d4" />
+            <!-- Candles -->
+            <rect x="40" y="35" width="2" height="10" fill="#fcd34d" />
+            <rect x="50" y="35" width="2" height="10" fill="#fcd34d" />
+            <rect x="60" y="35" width="2" height="10" fill="#fcd34d" />
+            <!-- Flames -->
+            <circle cx="41" cy="34" r="2" fill="#f97316" />
+            <circle cx="51" cy="34" r="2" fill="#f97316" />
+            <circle cx="61" cy="34" r="2" fill="#f97316" />
+        </svg>
+    </div>
+    
+    <div class="birthday-buttons">
+        <a href="{{ url_for('feelings') }}" class="btn btn-primary birthday-button">
+            <span>Continue to Your Messages</span>
+            <i class="fas fa-heart ms-2"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Create birthday confetti
+    function createConfetti() {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        
+        // Random position, color and size
+        const left = Math.random() * 100;
+        const size = Math.random() * 10 + 5;
+        const duration = Math.random() * 3 + 2;
+        const colors = ['#ff69b4', '#87cefa', '#90ee90', '#ffd700', '#ff7f50'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        confetti.style.left = `${left}vw`;
+        confetti.style.width = `${size}px`;
+        confetti.style.height = `${size}px`;
+        confetti.style.backgroundColor = color;
+        confetti.style.animationDuration = `${duration}s`;
+        
+        document.body.appendChild(confetti);
+        
+        // Remove confetti after animation
+        setTimeout(() => {
+            confetti.remove();
+        }, duration * 1000);
+    }
+    
+    // Create confetti at intervals
+    setInterval(createConfetti, 200);
+</script>
+{% endblock %}
