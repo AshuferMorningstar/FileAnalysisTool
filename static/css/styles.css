@@ -415,11 +415,26 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     font-size: 1.5rem;
     transition: all 0.3s ease;
+    overflow: hidden;
 }
 
 #chat-button:hover {
     transform: scale(1.1);
     background-color: var(--secondary-color);
+}
+
+.rabbit-icon {
+    font-size: 1.8rem;
+    animation: bounce-subtle 2s infinite;
+}
+
+@keyframes bounce-subtle {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
 }
 
 #chat-container {
@@ -493,12 +508,27 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .chat-header {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
     padding: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.chat-header h5 {
+    font-style: italic;
+    display: flex;
+    align-items: center;
+}
+
+.chat-header h5::before {
+    content: "🐰";
+    margin-right: 8px;
+    font-size: 1.2rem;
+    animation: bounce-subtle 2s infinite;
 }
 
 .chat-body {
@@ -537,9 +567,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .chat-message.received .chat-bubble {
-    background-color: #f0f0f0;
+    background-color: #f8e6ff;
     color: var(--dark-color);
     border-bottom-left-radius: 5px;
+    border-left: 3px solid var(--primary-color);
+}
+
+.chat-message.received .chat-sender {
+    color: var(--primary-color);
+    font-weight: 500;
 }
 
 .chat-sender {

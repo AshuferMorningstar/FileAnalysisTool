@@ -106,6 +106,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 createSparkle(e.clientX, e.clientY, sparkleContainer);
             }
         });
+        
+        // Add sparkle burst effect on navigation tab clicks
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Create a burst of sparkles
+                createSparkleBurst(e.clientX, e.clientY, sparkleContainer);
+            });
+        });
+    }
+    
+    function createSparkleBurst(x, y, container) {
+        // Create a burst of 15-25 sparkles
+        const sparkleCount = 15 + Math.floor(Math.random() * 10);
+        
+        for (let i = 0; i < sparkleCount; i++) {
+            // Calculate random position around the click point
+            const angle = Math.random() * Math.PI * 2; // Random angle in radians
+            const distance = Math.random() * 30; // Random distance from center
+            
+            const sparkleX = x + Math.cos(angle) * distance;
+            const sparkleY = y + Math.sin(angle) * distance;
+            
+            // Create sparkle with a slight delay for each
+            setTimeout(() => {
+                createSparkle(sparkleX, sparkleY, container);
+            }, i * 30); // Stagger the creation slightly
+        }
     }
     
     function createSparkle(x, y, container) {

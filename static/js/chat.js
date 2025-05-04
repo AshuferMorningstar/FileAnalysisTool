@@ -296,11 +296,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         const welcomeBubble = document.createElement('div');
                         welcomeBubble.classList.add('chat-bubble');
-                        welcomeBubble.textContent = "Hi there! This is a direct messaging system. Messages you send here will be received by Louise's creator. Feel free to leave any thoughts or messages!";
+                        welcomeBubble.textContent = "Hello! I'm Bunny, your friendly chat companion! 🐰 Messages you send here will be received by Louise's creator. Feel free to leave any thoughts or messages!";
                         
                         const welcomeSender = document.createElement('div');
                         welcomeSender.classList.add('chat-sender');
-                        welcomeSender.textContent = 'System';
+                        welcomeSender.textContent = 'Bunny';
                         
                         welcomeMsg.appendChild(welcomeBubble);
                         welcomeMsg.appendChild(welcomeSender);
