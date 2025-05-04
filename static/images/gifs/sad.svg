@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#aaccff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#6699cc" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Face -->
+  <circle cx="100" cy="100" r="80" fill="url(#bg)">
+    <animate attributeName="r" values="80;78;80" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Eyes -->
+  <circle cx="70" cy="80" r="10" fill="#333">
+    <animate attributeName="cy" values="80;83;80" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="130" cy="80" r="10" fill="#333">
+    <animate attributeName="cy" values="80;83;80" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Frown -->
+  <path d="M60,140 Q100,110 140,140" stroke="#333" stroke-width="6" fill="none">
+    <animate attributeName="d" values="M60,140 Q100,110 140,140;M60,140 Q100,105 140,140;M60,140 Q100,110 140,140" dur="3s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Rain drops -->
+  <circle cx="50" cy="30" r="5" fill="#99ccff">
+    <animate attributeName="cy" values="30;160;30" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0;0;1" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="80" cy="20" r="5" fill="#99ccff">
+    <animate attributeName="cy" values="20;160;20" dur="2.2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0;0;1" dur="2.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="120" cy="40" r="5" fill="#99ccff">
+    <animate attributeName="cy" values="40;160;40" dur="1.8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0;0;1" dur="1.8s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="150" cy="25" r="5" fill="#99ccff">
+    <animate attributeName="cy" values="25;160;25" dur="2.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0;0;1" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+</svg>

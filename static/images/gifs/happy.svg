@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#ffcc99" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#ffaa66" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Face -->
+  <circle cx="100" cy="100" r="80" fill="url(#bg)">
+    <animate attributeName="r" values="80;85;80" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Eyes -->
+  <circle cx="70" cy="80" r="10" fill="#333">
+    <animate attributeName="r" values="10;12;10" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="130" cy="80" r="10" fill="#333">
+    <animate attributeName="r" values="10;12;10" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Smile -->
+  <path d="M60,120 Q100,160 140,120" stroke="#333" stroke-width="6" fill="none">
+    <animate attributeName="d" values="M60,120 Q100,160 140,120;M60,120 Q100,170 140,120;M60,120 Q100,160 140,120" dur="2s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Hearts -->
+  <g>
+    <path d="M30,30 C40,15 60,15 60,30 C60,15 80,15 90,30 L60,60 Z" fill="#ff6666" opacity="0.8">
+      <animate attributeName="transform" type="rotate" 
+               values="0 60 45; 10 60 45; 0 60 45" 
+               dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  <g>
+    <path d="M130,40 C140,25 160,25 160,40 C160,25 180,25 190,40 L160,70 Z" fill="#ff6666" opacity="0.8" transform="scale(0.7)">
+      <animate attributeName="transform" type="rotate" 
+               values="0 160 55; -10 160 55; 0 160 55" 
+               dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+    </path>
+  </g>
+</svg>

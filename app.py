@@ -740,7 +740,13 @@ def save_chat():
 def get_chat_history():
     """Get the chat history from the database"""
     limit = request.args.get('limit', 50, type=int)
-    messages = ChatMessage.query.order_by(ChatMessage.timestamp.asc()).limit(limit).all()
+    since_id = request.args.get('since_id', 0, type=int)
+    
+    # If since_id is provided, only get messages newer than that ID
+    if since_id > 0:
+        messages = ChatMessage.query.filter(ChatMessage.id > since_id).order_by(ChatMessage.timestamp.asc()).all()
+    else:
+        messages = ChatMessage.query.order_by(ChatMessage.timestamp.asc()).limit(limit).all()
     
     message_list = [{
         "id": msg.id,

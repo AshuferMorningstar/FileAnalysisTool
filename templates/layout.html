@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/clouds.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/stars.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shooting-stars.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat-extras.css') }}">
     {% block head %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
@@ -71,12 +72,18 @@
             </div>
             <div id="chat-messages" class="chat-body"></div>
             <div class="chat-footer">
-                <div class="upload-options">
+                <div class="chat-action-buttons">
                     <button id="photo-upload" class="upload-btn" title="Send Photo">
                         <i class="fas fa-image"></i>
                     </button>
                     <button id="audio-upload" class="upload-btn" title="Send Audio">
                         <i class="fas fa-microphone"></i>
+                    </button>
+                    <button id="gif-button" class="upload-btn" title="Send GIF">
+                        <span>GIF</span>
+                    </button>
+                    <button id="sticker-button" class="upload-btn" title="Send Sticker">
+                        <i class="fas fa-smile"></i>
                     </button>
                 </div>
                 <input type="text" id="chat-input" class="form-control" placeholder="Type a message...">

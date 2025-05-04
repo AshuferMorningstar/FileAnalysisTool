@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#ffcccc" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#ff9999" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Face -->
+  <circle cx="100" cy="100" r="80" fill="url(#bg)">
+    <animate attributeName="r" values="80;85;80" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Heart eyes -->
+  <path d="M60,70 C65,60 80,60 80,70 C80,60 95,60 100,70 L80,90 Z" fill="#ff3366">
+    <animate attributeName="transform" type="scale" 
+             values="1;1.1;1" 
+             dur="1s" repeatCount="indefinite" additive="sum"/>
+    <animate attributeName="transform" type="translate" 
+             values="0,0;0,-2;0,0" 
+             dur="1s" repeatCount="indefinite" additive="sum"/>
+  </path>
+  
+  <path d="M120,70 C125,60 140,60 140,70 C140,60 155,60 160,70 L140,90 Z" fill="#ff3366">
+    <animate attributeName="transform" type="scale" 
+             values="1;1.1;1" 
+             dur="1s" repeatCount="indefinite" additive="sum"/>
+    <animate attributeName="transform" type="translate" 
+             values="0,0;0,-2;0,0" 
+             dur="1s" repeatCount="indefinite" additive="sum"/>
+  </path>
+  
+  <!-- Smile -->
+  <path d="M70,120 Q100,150 130,120" stroke="#333" stroke-width="6" fill="none">
+    <animate attributeName="d" values="M70,120 Q100,150 130,120;M70,120 Q100,155 130,120;M70,120 Q100,150 130,120" dur="1.5s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Floating hearts -->
+  <g>
+    <path d="M30,50 C35,40 45,40 45,50 C45,40 55,40 60,50 L45,65 Z" fill="#ff3366" opacity="0.8">
+      <animate attributeName="transform" type="translate" 
+               values="0,0;5,-20;10,-40;15,-60;20,-80" 
+               dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.8;0.6;0.4;0.2;0" dur="3s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <g>
+    <path d="M150,60 C155,50 165,50 165,60 C165,50 175,50 180,60 L165,75 Z" fill="#ff3366" opacity="0.8">
+      <animate attributeName="transform" type="translate" 
+               values="0,0;-5,-20;-10,-40;-15,-60;-20,-80" 
+               dur="3.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.8;0.6;0.4;0.2;0" dur="3.5s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <g>
+    <path d="M100,150 C105,140 115,140 115,150 C115,140 125,140 130,150 L115,165 Z" fill="#ff3366" opacity="0.8" transform="scale(0.7)">
+      <animate attributeName="transform" type="translate" 
+               values="0,0;0,-20;0,-40;0,-60;0,-80" 
+               dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.8;0.6;0.4;0.2;0" dur="4s" repeatCount="indefinite"/>
+    </path>
+  </g>
+</svg>
