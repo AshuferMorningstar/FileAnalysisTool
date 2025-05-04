@@ -1,3 +1,10 @@
+// Function to format timestamp nicely
+function formatTimestamp(date) {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Chat elements
     const chatButton = document.getElementById('chat-button');
@@ -197,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Function to add message to chat UI with improved animations
-    function addMessageToChat(sender, message, type) {
+    function addMessageToChat(sender, message, type, timestamp = null) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('chat-message', type);
         
@@ -229,9 +236,28 @@ document.addEventListener('DOMContentLoaded', function() {
             bubbleElement.textContent = message;
         }
         
+        // Create sender element with timestamp
         const senderElement = document.createElement('div');
         senderElement.classList.add('chat-sender');
-        senderElement.textContent = sender;
+        
+        // Add sender name
+        const senderName = document.createElement('span');
+        senderName.textContent = sender;
+        senderElement.appendChild(senderName);
+        
+        // Add timestamp
+        const timeElement = document.createElement('span');
+        timeElement.classList.add('chat-time');
+        
+        // If timestamp is provided (from history), use it
+        // Otherwise create a new timestamp for current time
+        if (timestamp) {
+            timeElement.textContent = formatTimestamp(new Date(timestamp));
+        } else {
+            timeElement.textContent = formatTimestamp(new Date());
+        }
+        
+        senderElement.appendChild(timeElement);
         
         messageElement.appendChild(bubbleElement);
         messageElement.appendChild(senderElement);
@@ -300,7 +326,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         const welcomeSender = document.createElement('div');
                         welcomeSender.classList.add('chat-sender');
-                        welcomeSender.textContent = 'Bunny';
+                        
+                        // Add sender name
+                        const senderName = document.createElement('span');
+                        senderName.textContent = 'Bunny';
+                        welcomeSender.appendChild(senderName);
+                        
+                        // Add timestamp
+                        const timeElement = document.createElement('span');
+                        timeElement.classList.add('chat-time');
+                        timeElement.textContent = formatTimestamp(new Date());
+                        welcomeSender.appendChild(timeElement);
                         
                         welcomeMsg.appendChild(welcomeBubble);
                         welcomeMsg.appendChild(welcomeSender);
@@ -313,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             // Delay each message slightly for a staggered effect
                             setTimeout(() => {
-                                addMessageToChat(item.sender, item.content, type);
+                                addMessageToChat(item.sender, item.content, type, item.timestamp);
                                 
                                 // Make rabbit appear occasionally for received messages
                                 if (type === 'received' && Math.random() > 0.7) {

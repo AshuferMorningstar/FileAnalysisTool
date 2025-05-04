@@ -698,6 +698,16 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.8rem;
     color: #6c757d;
     margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.chat-time {
+    font-size: 0.7rem;
+    color: #a0a0a0;
+    margin-left: 10px;
 }
 
 .chat-footer {
