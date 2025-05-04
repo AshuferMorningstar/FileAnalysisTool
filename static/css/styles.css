@@ -25,6 +25,72 @@ body {
     overflow-x: hidden;
 }
 
+/* Navigation Styles */
+.navbar {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 0.8rem 1rem;
+    z-index: 100;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.nav-link {
+    color: var(--dark-color);
+    font-weight: 500;
+    margin: 0 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+/* Make navbar text light on dark backgrounds */
+.welcome-page .navbar, 
+.feelings-page .navbar,
+.response-page .navbar,
+.birthday-page .navbar {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.welcome-page .navbar-brand, 
+.feelings-page .navbar-brand,
+.response-page .navbar-brand,
+.birthday-page .navbar-brand,
+.welcome-page .nav-link, 
+.feelings-page .nav-link,
+.response-page .nav-link,
+.birthday-page .nav-link {
+    color: white;
+}
+
+.welcome-page .nav-link:hover, 
+.feelings-page .nav-link:hover,
+.response-page .nav-link:hover,
+.birthday-page .nav-link:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.welcome-page .navbar-toggler, 
+.feelings-page .navbar-toggler,
+.response-page .navbar-toggler,
+.birthday-page .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.welcome-page .navbar-toggler-icon, 
+.feelings-page .navbar-toggler-icon,
+.response-page .navbar-toggler-icon,
+.birthday-page .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
 .main-container {
     max-width: 800px;
     padding: 2rem;
