@@ -304,7 +304,11 @@ def update_chat():
             "id": message.id,
             "sender": message.sender,
             "content": message.content,
-            "timestamp": message.timestamp.isoformat()
+            "timestamp": message.timestamp.isoformat(),
+            "user_name": message.user_name,
+            "device_id": message.device_id,
+            "message_type": message.message_type,
+            "file_path": message.file_path
         }
     })
     

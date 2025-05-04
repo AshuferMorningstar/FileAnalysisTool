@@ -1047,3 +1047,157 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateY(-2px);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
+
+/* User Name Modal */
+#user-name-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+#user-name-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.user-name-container {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 15px;
+    padding: 25px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+#user-name-modal.show .user-name-container {
+    transform: scale(1);
+}
+
+.user-name-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, 
+        var(--floral-accent-1), 
+        var(--floral-accent-2), 
+        var(--floral-accent-3), 
+        var(--floral-accent-4));
+    opacity: 0.8;
+}
+
+.user-name-container h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.user-name-container p {
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+#user-name-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 25px;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+#user-name-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+    background-color: white;
+}
+
+#save-user-name {
+    background-color: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#save-user-name:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Upload related styles */
+.upload-options {
+    display: flex;
+    gap: 8px;
+    margin-right: 5px;
+}
+
+.upload-btn {
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    color: var(--dark-color);
+    cursor: pointer;
+}
+
+.upload-btn:hover {
+    background-color: var(--secondary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Media content in chat bubbles */
+.chat-image {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chat-audio {
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 20px;
+}
+
+/* Shake animation for input errors */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
