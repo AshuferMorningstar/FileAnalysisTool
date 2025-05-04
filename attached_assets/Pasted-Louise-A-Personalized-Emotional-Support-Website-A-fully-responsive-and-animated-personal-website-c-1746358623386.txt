@@ -1,0 +1,107 @@
+Louise: A Personalized Emotional Support Website
+
+A fully responsive and animated personal website created for Louise, someone truly special. This site is built to emotionally uplift her, provide thoughtful interactions, and maintain a private, beautiful connection through unique messages and conversations.
+
+
+---
+
+Features
+
+1. Animated Landing Page
+
+Displays: “Welcome Louise” with soft fade-in/fade-out animation.
+
+Aesthetic background with relaxing visual themes.
+
+Automatically redirects or provides a button to move forward.
+
+
+2. Compliment Page
+
+Randomly displays one of 100 personalized compliments.
+
+Each compliment is unique and will not repeat until all are shown.
+
+Below the compliment:
+“How are you, Louise?” with emotion buttons:
+
+Happy
+
+Sad
+
+Lonely
+
+Overwhelmed
+
+Don’t Know
+
+
+
+3. Emotion-Based Motivation Page
+
+Clicking on any emotion shows a new page with 100 unique responses tailored to that emotion.
+
+Responses never repeat until all are seen.
+
+Each page has a Back button for easy navigation.
+
+
+4. Birthday Greeting (May 6th)
+
+On Louise’s birthday (6th May), a special birthday page appears for 24 hours.
+
+Rotates through different heartfelt greetings every time she visits that day.
+
+
+5. Chat Feature
+
+Floating “Chat with Me” button available on all pages.
+
+Opens a simple, personal chat interface (Snapchat-style).
+
+Chat history is saved locally and shown again on next visit.
+
+Messages are labeled as “You” and “Louise.”
+
+
+
+---
+
+User Experience (UX) Highlights
+
+Soft, emotional color schemes unique to each emotion page.
+
+Animated transitions between pages.
+
+Clean mobile- and desktop-friendly layout.
+
+Personalized messages using Louise’s name.
+
+Smooth hover and entry effects for buttons and interactions.
+
+
+
+---
+
+Technology Stack
+
+
+---
+
+Deployment
+
+Can be deployed and shared publicly using:
+
+Replit (best for fast sharing with a free live URL)
+
+Render (great for long-term hosting with GitHub)
+
+PythonAnywhere (simple, Python-friendly hosting)
+
+
+
+---
+
+Goal
+
+To make Louise feel loved, supported, and emotionally connected every time she opens this website.
