@@ -1510,4 +1510,169 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+    
+    // Function to show notification badge with count
+    function showNotificationBadge(count = '') {
+        const badge = document.querySelector('.notification-badge');
+        if (badge) {
+            badge.style.display = 'flex';
+            
+            if (count && count > 1) {
+                badge.textContent = count > 9 ? '9+' : count;
+            } else {
+                badge.textContent = '';
+            }
+            
+            // Also show the notification dot on the rabbit if available
+            const notificationDot = document.querySelector('.notification-dot');
+            if (notificationDot) {
+                notificationDot.style.display = 'block';
+            }
+            
+            // Show the rabbit with notification message
+            if (window.Rabbit && typeof window.Rabbit.say === 'function') {
+                if (count === 1) {
+                    setTimeout(() => {
+                        window.Rabbit.say("You have a new message!");
+                    }, 1000);
+                } else if (count > 1) {
+                    setTimeout(() => {
+                        window.Rabbit.say(`You have ${count} new messages!`);
+                    }, 1000);
+                }
+            }
+        }
+    }
+    
+    // Function to hide notification badge
+    function hideNotificationBadge() {
+        const badge = document.querySelector('.notification-badge');
+        if (badge) {
+            badge.style.display = 'none';
+        }
+        
+        // Also hide the notification dot on the rabbit
+        const notificationDot = document.querySelector('.notification-dot');
+        if (notificationDot) {
+            notificationDot.style.display = 'none';
+        }
+        
+        // Reset unread messages
+        hasUnreadMessages = false;
+        
+        // Update last chat visit time
+        lastChatVisit = Date.now();
+        localStorage.setItem('lastChatVisit', lastChatVisit.toString());
+    }
+    
+    // Start checking for real-time updates
+    function startRealTimeUpdates() {
+        if (!isRealTimeUpdatesActive) {
+            console.log('Starting real-time updates...');
+            isRealTimeUpdatesActive = true;
+            
+            // Initial check
+            checkForNewMessages();
+            
+            // Set up polling interval
+            chatPollingInterval = setInterval(checkForNewMessages, 8000);
+            
+            // Check if we need to show the notification badge on page load
+            fetch('/get_chat_history')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success' && data.messages && data.messages.length > 0) {
+                        // Check for messages newer than the last visit
+                        const unreadMessages = data.messages.filter(message => {
+                            const messageTime = new Date(message.timestamp).getTime();
+                            const deviceId = getOrCreateDeviceId();
+                            return messageTime > lastChatVisit && message.device_id !== deviceId;
+                        });
+                        
+                        if (unreadMessages.length > 0) {
+                            hasUnreadMessages = true;
+                            showNotificationBadge(unreadMessages.length);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking unread messages:', error);
+                });
+        }
+    }
+    
+    // Check for new messages at regular intervals
+    function checkForNewMessages() {
+        const lastId = lastMessageId;
+        
+        fetch('/get_chat_history?lastId=' + lastId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // If there are new messages, add them to the chat
+                    if (data.messages && data.messages.length > 0) {
+                        let unreadCount = 0;
+                        let newMessageReceived = false;
+                        
+                        data.messages.forEach(message => {
+                            if (message.id > lastId) {
+                                lastMessageId = Math.max(lastMessageId, message.id);
+                                
+                                // Don't add messages from this device
+                                const deviceId = getOrCreateDeviceId();
+                                const senderName = message.sender;
+                                
+                                if (message.device_id !== deviceId) {
+                                    // Add message to chat if the chat is visible
+                                    const chatContainer = document.getElementById('chat-container');
+                                    if (chatContainer && !chatContainer.classList.contains('d-none')) {
+                                        const messageElement = addMessageToChat(
+                                            senderName, 
+                                            message.content, 
+                                            'received', 
+                                            message.timestamp, 
+                                            message.id,
+                                            message.user_name,
+                                            message.user_identifier
+                                        );
+                                    }
+                                    
+                                    // Check if this is a new unread message
+                                    const messageTime = new Date(message.timestamp).getTime();
+                                    if (messageTime > lastChatVisit) {
+                                        unreadCount++;
+                                        newMessageReceived = true;
+                                    }
+                                }
+                            }
+                        });
+                        
+                        // If we got new messages and chat is hidden, show notification
+                        const chatContainer = document.getElementById('chat-container');
+                        if (newMessageReceived && chatContainer && chatContainer.classList.contains('d-none')) {
+                            hasUnreadMessages = true;
+                            showNotificationBadge(unreadCount);
+                        }
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error checking for new messages:', error);
+            });
+    }
+    
+    // Initialize the notification system
+    document.addEventListener('DOMContentLoaded', function() {
+        // Start real-time updates
+        setTimeout(startRealTimeUpdates, 500);
+        
+        // Add click handler to chat button to clear notifications
+        const chatButton = document.getElementById('chat-button');
+        if (chatButton) {
+            chatButton.addEventListener('click', function() {
+                // Hide notification badge when opening chat
+                hideNotificationBadge();
+            }, true);
+        }
+    });
 });
