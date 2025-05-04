@@ -278,3 +278,38 @@
     animation: pulse 1.5s infinite ease-in-out;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Read receipt and message seen status */
+.message-seen .chat-bubble {
+    /* No visual changes to bubble */
+}
+
+.read-receipt {
+    font-size: 10px;
+    text-align: right;
+    margin-top: 2px;
+    color: #aaa;
+    opacity: 0.7;
+}
+
+.read-receipt.seen {
+    color: #4CAF50;
+}
+
+/* Hide any red notification dots when messages are seen */
+.message-seen .notification-dot,
+.message-seen .notification-badge {
+    display: none !important;
+}

@@ -692,6 +692,17 @@ document.addEventListener('DOMContentLoaded', function() {
             messageElement.dataset.messageId = messageId;
         }
         
+        // Store timestamp for seen status
+        if (timestamp) {
+            messageElement.dataset.timestamp = timestamp;
+            
+            // Check if this message should be marked as seen
+            const messageTime = new Date(timestamp).getTime();
+            if (messageTime <= lastChatVisit) {
+                messageElement.classList.add('message-seen');
+            }
+        }
+        
         // Store the user identifier if provided
         if (userIdentifier) {
             messageElement.dataset.userIdentifier = userIdentifier;
@@ -1637,7 +1648,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Function to hide notification badge
+    // Function to hide notification badge and mark messages as seen
     function hideNotificationBadge() {
         const badge = document.querySelector('.notification-badge');
         if (badge) {
@@ -1653,9 +1664,39 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset unread messages
         hasUnreadMessages = false;
         
-        // Update last chat visit time
+        // Update last chat visit time to current time
         lastChatVisit = Date.now();
         localStorage.setItem('lastChatVisit', lastChatVisit.toString());
+        
+        // Tell other open tabs/windows that messages have been seen
+        localStorage.setItem('messages_seen_at', lastChatVisit.toString());
+        
+        // Make sure any message receipts are processed
+        processMessageReceipts();
+    }
+    
+    // Track when messages have been seen across browser tabs/windows
+    function processMessageReceipts() {
+        // Mark all messages as seen
+        const allMessages = document.querySelectorAll('.chat-message');
+        allMessages.forEach(msg => {
+            const timestamp = msg.dataset.timestamp;
+            if (timestamp) {
+                const messageTime = new Date(timestamp).getTime();
+                // If message is older than our last visit, it's seen
+                if (messageTime <= lastChatVisit) {
+                    // Mark as read visually
+                    msg.classList.add('message-seen');
+                    
+                    // Update read status in UI if needed
+                    const readReceipt = msg.querySelector('.read-receipt');
+                    if (readReceipt) {
+                        readReceipt.textContent = 'Seen';
+                        readReceipt.classList.add('seen');
+                    }
+                }
+            }
+        });
     }
     
     // Start checking for real-time updates
