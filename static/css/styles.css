@@ -1201,3 +1201,201 @@ h1, h2, h3, h4, h5, h6 {
     10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
     20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
+
+/* Chat Settings Modal */
+#chat-settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+#chat-settings-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.chat-settings-container {
+    background: white;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+#chat-settings-modal.show .chat-settings-container {
+    transform: scale(1);
+}
+
+.chat-settings-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-settings-header h3 {
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+}
+
+#close-settings {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+#close-settings:hover {
+    transform: rotate(90deg);
+}
+
+.chat-settings-body {
+    padding: 20px;
+    color: var(--dark-color);
+}
+
+.setting-group {
+    margin-bottom: 20px;
+}
+
+.setting-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.setting-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+#settings-user-name {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+#settings-user-name:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.2);
+    outline: none;
+}
+
+#save-settings-name {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+#save-settings-name:hover {
+    background-color: var(--floral-accent-1);
+    transform: translateY(-2px);
+}
+
+.background-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.bg-option {
+    padding: 8px 15px;
+    border: 2px solid transparent;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.bg-option:hover {
+    transform: translateY(-2px);
+}
+
+.bg-option.active {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.2);
+}
+
+.bg-option[data-background="default"] {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.bg-option[data-background="purple"] {
+    background: linear-gradient(135deg, #9c27b0, #673ab7);
+    color: white;
+}
+
+.bg-option[data-background="teal"] {
+    background: linear-gradient(135deg, #009688, #4db6ac);
+    color: white;
+}
+
+.bg-option[data-background="pink"] {
+    background: linear-gradient(135deg, #e91e63, #f48fb1);
+    color: white;
+}
+
+.bg-option[data-background="blue"] {
+    background: linear-gradient(135deg, #2196f3, #90caf9);
+    color: white;
+}
+
+/* Chat header styling */
+.chat-header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Chat container background themes */
+#chat-container.theme-purple {
+    background: linear-gradient(135deg, #9c27b0, #673ab7);
+}
+
+#chat-container.theme-teal {
+    background: linear-gradient(135deg, #009688, #4db6ac);
+}
+
+#chat-container.theme-pink {
+    background: linear-gradient(135deg, #e91e63, #f48fb1);
+}
+
+#chat-container.theme-blue {
+    background: linear-gradient(135deg, #2196f3, #90caf9);
+}
+
+/* Sender name styling */
+.chat-sender-name {
+    font-weight: 600;
+    margin-right: 5px;
+}

@@ -47,6 +47,10 @@ function saveUserName(name) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Apply saved background on load
+    setTimeout(() => {
+        applySavedBackground();
+    }, 100);
     // Chat elements
     const chatButton = document.getElementById('chat-button');
     const chatContainer = document.getElementById('chat-container');
@@ -116,6 +120,131 @@ document.addEventListener('DOMContentLoaded', function() {
                 userNameInput.style.animation = '';
             }, 500);
         }
+    });
+    
+    // Settings elements
+    const chatSettingsBtn = document.getElementById('chat-settings');
+    const chatSettingsModal = document.getElementById('chat-settings-modal');
+    const closeSettingsBtn = document.getElementById('close-settings');
+    const settingsUserName = document.getElementById('settings-user-name');
+    const saveSettingsNameBtn = document.getElementById('save-settings-name');
+    const bgOptions = document.querySelectorAll('.bg-option');
+    
+    // Get or create chat background preference
+    function getChatBackground() {
+        return localStorage.getItem('chat_background') || 'default';
+    }
+    
+    // Save chat background preference
+    function saveChatBackground(background) {
+        localStorage.setItem('chat_background', background);
+    }
+    
+    // Apply saved background on load
+    function applySavedBackground() {
+        const savedBg = getChatBackground();
+        
+        // First remove any theme classes
+        chatContainer.classList.remove('theme-purple', 'theme-teal', 'theme-pink', 'theme-blue');
+        
+        // Then add the saved theme if it's not default
+        if (savedBg !== 'default') {
+            chatContainer.classList.add('theme-' + savedBg);
+        }
+        
+        // Mark the active background option
+        bgOptions.forEach(option => {
+            if (option.dataset.background === savedBg) {
+                option.classList.add('active');
+            } else {
+                option.classList.remove('active');
+            }
+        });
+    }
+    
+    // Set up the chat settings button
+    chatSettingsBtn.addEventListener('click', function() {
+        // Load current settings into the modal
+        settingsUserName.value = getUserName() || '';
+        
+        // Mark the active background option
+        const savedBg = getChatBackground();
+        bgOptions.forEach(option => {
+            if (option.dataset.background === savedBg) {
+                option.classList.add('active');
+            } else {
+                option.classList.remove('active');
+            }
+        });
+        
+        // Show the settings modal with animation
+        chatSettingsModal.classList.add('show');
+        
+        // Focus on the name input
+        setTimeout(() => {
+            settingsUserName.focus();
+        }, 300);
+    });
+    
+    // Close settings modal
+    closeSettingsBtn.addEventListener('click', function() {
+        chatSettingsModal.classList.remove('show');
+    });
+    
+    // Save name from settings
+    saveSettingsNameBtn.addEventListener('click', function() {
+        const name = settingsUserName.value.trim();
+        if (name) {
+            saveUserName(name);
+            
+            // Show success animation
+            this.innerHTML = '<i class="fas fa-check"></i>';
+            this.style.backgroundColor = 'var(--happy-color)';
+            
+            setTimeout(() => {
+                this.textContent = 'Update';
+                this.style.backgroundColor = '';
+            }, 1500);
+        } else {
+            // Shake the input to indicate error
+            settingsUserName.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+                settingsUserName.style.animation = '';
+            }, 500);
+        }
+    });
+    
+    // Handle pressing enter in settings name input
+    settingsUserName.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            saveSettingsNameBtn.click();
+        }
+    });
+    
+    // Handle background color options
+    bgOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            const bg = this.dataset.background;
+            
+            // Save the preference
+            saveChatBackground(bg);
+            
+            // Update active class on options
+            bgOptions.forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Apply the background
+            chatContainer.classList.remove('theme-purple', 'theme-teal', 'theme-pink', 'theme-blue');
+            if (bg !== 'default') {
+                chatContainer.classList.add('theme-' + bg);
+            }
+            
+            // Add small animation for feedback
+            this.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 300);
+        });
     });
     
     // Let user press Enter to save name
