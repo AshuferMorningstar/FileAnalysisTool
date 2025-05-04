@@ -52,9 +52,14 @@
         <div id="chat-container" class="d-none">
             <div class="chat-header">
                 <h5>Chat with Bunny</h5>
-                <button id="close-chat" class="btn btn-sm text-white">
-                    <i class="fas fa-times"></i>
-                </button>
+                <div class="chat-header-actions">
+                    <button id="chat-settings" class="btn btn-sm text-white" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button id="close-chat" class="btn btn-sm text-white" title="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
             <div class="call-buttons d-none">
                 <button class="call-btn audio">
@@ -90,6 +95,39 @@
             <p>Let us know what to call you so Louise knows who's sending messages.</p>
             <input type="text" id="user-name-input" placeholder="Your name" maxlength="30">
             <button id="save-user-name">Continue to Chat</button>
+        </div>
+    </div>
+    
+    <!-- Chat Settings Modal -->
+    <div id="chat-settings-modal">
+        <div class="chat-settings-container">
+            <div class="chat-settings-header">
+                <h3>Chat Settings</h3>
+                <button id="close-settings" class="btn btn-sm">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chat-settings-body">
+                <div class="setting-group">
+                    <label for="settings-user-name">Your Name</label>
+                    <div class="setting-input-group">
+                        <input type="text" id="settings-user-name" placeholder="Your name" maxlength="30">
+                        <button id="save-settings-name" class="btn btn-sm btn-primary">Update</button>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <label>Chat Background</label>
+                    <div class="background-options">
+                        <button class="bg-option" data-background="default">Default</button>
+                        <button class="bg-option" data-background="purple">Purple</button>
+                        <button class="bg-option" data-background="teal">Teal</button>
+                        <button class="bg-option" data-background="pink">Pink</button>
+                        <button class="bg-option" data-background="blue">Blue</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
