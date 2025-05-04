@@ -41,27 +41,42 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         },
         
+        // Track user interaction
+        hasInteracted: false,
+        
         // Play a sound
         play: function(soundName) {
+            // Skip sound playback if user hasn't interacted yet
+            if (!this.hasInteracted) {
+                return;
+            }
+            
             try {
                 if (this.audioElements[soundName]) {
                     // Reset sound to beginning
                     this.audioElements[soundName].currentTime = 0;
                     this.audioElements[soundName].play().catch(e => {
-                        // Ignore errors - they commonly happen when user hasn't interacted with the page yet
-                        console.log("Sound couldn't play yet: " + e.message);
+                        // Just silently ignore autoplay errors
+                        // These are expected on first page load
                     });
-                } else {
-                    console.log("Sound not found: " + soundName);
                 }
             } catch (e) {
-                console.log("Error playing sound: " + e.message);
+                // Silently ignore errors
             }
         }
     };
     
     // Initialize sound manager
     SoundManager.init();
+    
+    // Set up user interaction tracking
+    document.addEventListener('click', function() {
+        SoundManager.hasInteracted = true;
+    });
+    
+    document.addEventListener('keydown', function() {
+        SoundManager.hasInteracted = true;
+    });
     
     // Make the sound manager globally available
     window.SoundManager = SoundManager;
