@@ -1,15 +1,28 @@
-/* Base Styles - Floral Theme */
+/* Base Styles - Floral Theme with Aesthetic Emotion Colors */
 :root {
     --primary-color: #e08d95;        /* Soft Rose Pink */
     --secondary-color: #ffc8dd;      /* Light Pink */
     --light-color: #f8f9fa;
     --dark-color: #5a5766;           /* Muted Purple-Gray */
-    --happy-color: #90be6d;          /* Sage Green */
-    --sad-color: #a4b8c4;            /* Dusty Blue */
-    --lonely-color: #c9b1bd;         /* Lavender */
-    --overwhelmed-color: #e9967a;    /* Peach */
-    --dontknow-color: #f1ca89;       /* Warm Beige */
+    
+    /* Aesthetic Emotion Colors */
+    --happy-color: #97c1a9;          /* Sage Green - Serene, joyful */
+    --happy-gradient: #cbe2d6;       /* Lighter sage for gradient */
+    
+    --sad-color: #8da9c4;            /* Dusty Blue - Calm, melancholy */
+    --sad-gradient: #b3c7d6;         /* Lighter blue for gradient */
+    
+    --lonely-color: #d1b3c4;         /* Soft Mauve - Gentle, introspective */
+    --lonely-gradient: #e4d1df;      /* Lighter mauve for gradient */
+    
+    --overwhelmed-color: #e4b7a0;    /* Terracotta - Warm, grounding */
+    --overwhelmed-gradient: #f6d8c8;  /* Lighter terracotta for gradient */
+    
+    --dontknow-color: #f2d0a9;       /* Warm Beige - Neutral, open */
+    --dontknow-gradient: #f8e4c9;    /* Lighter beige for gradient */
+    
     --birthday-color: #ffafcc;       /* Soft Pink */
+    --birthday-gradient: #ffc8dd;    /* Lighter pink for gradient */
     --transition-time: 0.4s;
     
     /* Additional Floral Colors */
@@ -306,23 +319,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .happy-theme {
-    background: linear-gradient(135deg, var(--happy-color), var(--floral-accent-2));
+    background: linear-gradient(135deg, var(--happy-color), var(--happy-gradient));
 }
 
 .sad-theme {
-    background: linear-gradient(135deg, var(--sad-color), var(--primary-color));
+    background: linear-gradient(135deg, var(--sad-color), var(--sad-gradient));
 }
 
 .lonely-theme {
-    background: linear-gradient(135deg, var(--lonely-color), var(--floral-accent-3));
+    background: linear-gradient(135deg, var(--lonely-color), var(--lonely-gradient));
 }
 
 .overwhelmed-theme {
-    background: linear-gradient(135deg, var(--overwhelmed-color), var(--floral-accent-4));
+    background: linear-gradient(135deg, var(--overwhelmed-color), var(--overwhelmed-gradient));
 }
 
 .dontknow-theme {
-    background: linear-gradient(135deg, var(--dontknow-color), var(--floral-accent-1));
+    background: linear-gradient(135deg, var(--dontknow-color), var(--dontknow-gradient));
 }
 
 .message-box {
@@ -353,6 +366,47 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0.8;
 }
 
+/* Emotion-specific message box styling */
+.happy-theme .message-box::after {
+    background: linear-gradient(90deg, 
+        var(--happy-color), 
+        var(--happy-gradient), 
+        var(--floral-accent-2), 
+        var(--happy-color));
+}
+
+.sad-theme .message-box::after {
+    background: linear-gradient(90deg, 
+        var(--sad-color), 
+        var(--sad-gradient), 
+        var(--floral-accent-1), 
+        var(--sad-color));
+}
+
+.lonely-theme .message-box::after {
+    background: linear-gradient(90deg, 
+        var(--lonely-color), 
+        var(--lonely-gradient), 
+        var(--floral-accent-3), 
+        var(--lonely-color));
+}
+
+.overwhelmed-theme .message-box::after {
+    background: linear-gradient(90deg, 
+        var(--overwhelmed-color), 
+        var(--overwhelmed-gradient), 
+        var(--floral-accent-4), 
+        var(--overwhelmed-color));
+}
+
+.dontknow-theme .message-box::after {
+    background: linear-gradient(90deg, 
+        var(--dontknow-color), 
+        var(--dontknow-gradient), 
+        var(--floral-accent-1), 
+        var(--dontknow-color));
+}
+
 .message {
     font-size: 2rem;
     line-height: 1.4;
@@ -381,7 +435,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Birthday Page */
 .birthday-page {
-    background: linear-gradient(135deg, var(--birthday-color), var(--primary-color));
+    background: linear-gradient(135deg, var(--birthday-color), var(--birthday-gradient));
     color: white;
 }
 
@@ -419,8 +473,8 @@ h1, h2, h3, h4, h5, h6 {
     height: 4px;
     background: linear-gradient(90deg, 
         var(--birthday-color), 
-        var(--floral-accent-2), 
-        var(--floral-accent-4), 
+        var(--birthday-gradient), 
+        var(--birthday-color), 
         var(--primary-color));
     opacity: 0.8;
 }
