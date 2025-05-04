@@ -109,6 +109,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const messageElement = addMessageToChat('You', message, 'sent');
             messageElement.style.animation = 'fadeInUp 0.3s ease-out';
             
+            // Show rabbit animation with sending message
+            if (window.Rabbit && typeof window.Rabbit.say === 'function') {
+                window.Rabbit.say(window.Rabbit.getRandomMessage());
+                
+                // Play rabbit sound
+                if (window.SoundManager && typeof window.SoundManager.play === 'function') {
+                    window.SoundManager.play('rabbit');
+                }
+            }
+            
             // Show typing indicator
             const typingIndicator = showTypingIndicator();
             
@@ -304,6 +314,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             // Delay each message slightly for a staggered effect
                             setTimeout(() => {
                                 addMessageToChat(item.sender, item.content, type);
+                                
+                                // Make rabbit appear occasionally for received messages
+                                if (type === 'received' && Math.random() > 0.7) {
+                                    setTimeout(() => {
+                                        if (window.Rabbit && typeof window.Rabbit.say === 'function') {
+                                            window.Rabbit.say(window.Rabbit.getRandomMessage());
+                                            
+                                            // Play rabbit sound
+                                            if (window.SoundManager && typeof window.SoundManager.play === 'function') {
+                                                window.SoundManager.play('rabbit');
+                                            }
+                                        }
+                                    }, 500);
+                                }
                             }, index * 100);
                         });
                     }

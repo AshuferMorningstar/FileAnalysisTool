@@ -185,5 +185,41 @@
     
     // Create confetti at intervals
     setInterval(createTraditionalConfetti, 200);
+    
+    // Show birthday rabbit after a delay
+    setTimeout(function() {
+        if (window.Rabbit && typeof window.Rabbit.say === 'function') {
+            window.Rabbit.say("Happy Birthday Louise! 🎂 Make a wish! 🐰");
+            
+            // Play rabbit sound
+            if (window.SoundManager && typeof window.SoundManager.play === 'function') {
+                window.SoundManager.play('rabbit');
+            }
+        }
+    }, 2000);
+    
+    // Add rabbit when candles are blown out
+    const flames = document.querySelectorAll('circle[fill="#f97316"]');
+    let candlesBlown = 0;
+    
+    flames.forEach(flame => {
+        flame.addEventListener('click', function() {
+            candlesBlown++;
+            
+            if (candlesBlown === flames.length) {
+                // All candles blown out - show special rabbit message
+                setTimeout(function() {
+                    if (window.Rabbit && typeof window.Rabbit.say === 'function') {
+                        window.Rabbit.say("Yay! You blew all the candles! 🎉 Your wish will come true! 🐰");
+                        
+                        // Play rabbit sound
+                        if (window.SoundManager && typeof window.SoundManager.play === 'function') {
+                            window.SoundManager.play('rabbit');
+                        }
+                    }
+                }, 1500);
+            }
+        });
+    });
 </script>
 {% endblock %}

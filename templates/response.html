@@ -18,3 +18,42 @@
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show rabbit with feeling-specific message after a short delay
+        setTimeout(function() {
+            if (window.Rabbit && typeof window.Rabbit.say === 'function') {
+                let feeling = "{{ feeling }}";
+                let rabbitMessage = "";
+                
+                // Choose message based on the feeling
+                switch(feeling) {
+                    case 'happy':
+                        rabbitMessage = "I'm so happy you're happy! 🐰";
+                        break;
+                    case 'sad':
+                        rabbitMessage = "I'm here for you when you're sad. 🐰 *hugs*";
+                        break;
+                    case 'lonely':
+                        rabbitMessage = "You're never alone, I'm here! 🐰";
+                        break;
+                    case 'overwhelmed':
+                        rabbitMessage = "Take a deep breath. One step at a time! 🐰";
+                        break;
+                    default:
+                        rabbitMessage = "I'm here to support you! 🐰";
+                }
+                
+                window.Rabbit.say(rabbitMessage);
+                
+                // Play rabbit sound
+                if (window.SoundManager && typeof window.SoundManager.play === 'function') {
+                    window.SoundManager.play('rabbit');
+                }
+            }
+        }, 1000);
+    });
+</script>
+{% endblock %}
