@@ -229,3 +229,52 @@
         opacity: 1;
     }
 }
+
+/* Chat button and notification styles */
+.chat-wrapper {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+#chat-button {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    background-color: #FF85B3;
+    border: none;
+}
+
+#chat-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+}
+
+.rabbit-btn-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background-color: #FF3366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    animation: pulse 1.5s infinite ease-in-out;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}

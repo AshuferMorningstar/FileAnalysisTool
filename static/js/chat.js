@@ -73,6 +73,8 @@ let typingTimeout = null;
 let isTyping = false;
 let lastTypingUpdate = Date.now();
 let chatPollingInterval = null;
+let hasUnreadMessages = false;
+let lastChatVisit = parseInt(localStorage.getItem('lastChatVisit') || '0');
 
 document.addEventListener('DOMContentLoaded', function() {
     // Apply saved background on load

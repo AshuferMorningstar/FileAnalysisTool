@@ -48,7 +48,16 @@
 
     <div class="chat-wrapper">
         <button id="chat-button" class="btn btn-primary rounded-circle">
-            <span class="rabbit-icon">🐰</span>
+            <svg viewBox="0 0 100 100" class="rabbit-btn-icon">
+                <circle cx="50" cy="45" r="20" fill="white" />
+                <path d="M35 30C30 15 25 5 20 5C15 5 20 25 25 30" fill="white" />
+                <path d="M65 30C70 15 75 5 80 5C85 5 80 25 75 30" fill="white" />
+                <circle cx="40" cy="40" r="3" fill="#333" />
+                <circle cx="60" cy="40" r="3" fill="#333" />
+                <circle cx="50" cy="50" r="4" fill="#FFABCD" />
+                <path d="M45 55 Q50 60 55 55" stroke="#333" stroke-width="1.5" fill="none" />
+            </svg>
+            <span class="notification-badge" style="display: none;"></span>
         </button>
         <div id="chat-container" class="d-none">
             <div class="chat-header">

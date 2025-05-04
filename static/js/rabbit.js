@@ -6,34 +6,44 @@ document.addEventListener('DOMContentLoaded', function() {
         rabbitContainer.classList.add('rabbit-container');
         rabbitContainer.id = 'rabbit-helper';
         
-        // Create the SVG rabbit
+        // Create the SVG rabbit (cuter version)
         const rabbitSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         rabbitSVG.classList.add('rabbit-svg');
         rabbitSVG.setAttribute('viewBox', '0 0 100 100');
         rabbitSVG.setAttribute('fill', 'none');
         rabbitSVG.innerHTML = `
             <!-- Rabbit body -->
-            <ellipse cx="50" cy="70" rx="25" ry="20" fill="#F5F5F5" />
+            <ellipse cx="50" cy="70" rx="25" ry="20" fill="#FFF5F7" />
             <!-- Rabbit head -->
-            <circle cx="50" cy="45" r="20" fill="white" />
+            <circle cx="50" cy="45" r="22" fill="#FFF5F7" />
             <!-- Left ear -->
-            <path d="M35 30C30 15 25 5 20 5C15 5 20 25 25 30" fill="#F5F5F5" class="rabbit-ear left-ear" />
+            <path d="M35 30C30 15 25 5 20 5C15 5 20 25 25 30" fill="#FFF5F7" class="rabbit-ear left-ear" />
+            <path d="M35 30C30 18 26 10 22 8" stroke="#FFCEE9" stroke-width="3" stroke-linecap="round" fill="none" />
             <!-- Right ear -->
-            <path d="M65 30C70 15 75 5 80 5C85 5 80 25 75 30" fill="#F5F5F5" class="rabbit-ear right-ear" />
+            <path d="M65 30C70 15 75 5 80 5C85 5 80 25 75 30" fill="#FFF5F7" class="rabbit-ear right-ear" />
+            <path d="M65 30C70 18 74 10 78 8" stroke="#FFCEE9" stroke-width="3" stroke-linecap="round" fill="none" />
+            <!-- Blush -->
+            <circle cx="35" cy="48" r="5" fill="#FFD7E5" opacity="0.8" />
+            <circle cx="65" cy="48" r="5" fill="#FFD7E5" opacity="0.8" />
             <!-- Eyes -->
-            <circle cx="40" cy="40" r="3" fill="#333" />
-            <circle cx="60" cy="40" r="3" fill="#333" />
+            <circle cx="40" cy="40" r="4" fill="#555" />
+            <circle cx="60" cy="40" r="4" fill="#555" />
+            <!-- Eye highlights -->
+            <circle cx="38" cy="38" r="1.5" fill="white" />
+            <circle cx="58" cy="38" r="1.5" fill="white" />
             <!-- Nose -->
-            <circle cx="50" cy="50" r="4" fill="#FFCECE" />
+            <circle cx="50" cy="50" r="4" fill="#FFABCD" />
             <!-- Whiskers -->
-            <line x1="35" y1="50" x2="25" y2="48" stroke="#999" stroke-width="1" />
-            <line x1="35" y1="52" x2="25" y2="52" stroke="#999" stroke-width="1" />
-            <line x1="35" y1="54" x2="25" y2="56" stroke="#999" stroke-width="1" />
-            <line x1="65" y1="50" x2="75" y2="48" stroke="#999" stroke-width="1" />
-            <line x1="65" y1="52" x2="75" y2="52" stroke="#999" stroke-width="1" />
-            <line x1="65" y1="54" x2="75" y2="56" stroke="#999" stroke-width="1" />
+            <line x1="35" y1="50" x2="25" y2="48" stroke="#BBBBBB" stroke-width="1" />
+            <line x1="35" y1="52" x2="25" y2="52" stroke="#BBBBBB" stroke-width="1" />
+            <line x1="35" y1="54" x2="25" y2="56" stroke="#BBBBBB" stroke-width="1" />
+            <line x1="65" y1="50" x2="75" y2="48" stroke="#BBBBBB" stroke-width="1" />
+            <line x1="65" y1="52" x2="75" y2="52" stroke="#BBBBBB" stroke-width="1" />
+            <line x1="65" y1="54" x2="75" y2="56" stroke="#BBBBBB" stroke-width="1" />
             <!-- Mouth -->
-            <path d="M45 55 Q50 60 55 55" stroke="#333" stroke-width="1.5" fill="none" />
+            <path d="M45 55 Q50 60 55 55" stroke="#555" stroke-width="1.5" fill="none" />
+            <!-- Optional notification dot -->
+            <circle cx="75" cy="25" r="8" fill="#FF6B95" class="notification-dot" style="display: none;" />
         `;
         
         // Create speech bubble
