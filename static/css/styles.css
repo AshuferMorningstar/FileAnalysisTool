@@ -1,35 +1,35 @@
-/* Base Styles - Floral Theme with Aesthetic Emotion Colors */
+/* Base Styles - Floral Theme with Deeper Aesthetic Emotion Colors */
 :root {
-    --primary-color: #e08d95;        /* Soft Rose Pink */
-    --secondary-color: #ffc8dd;      /* Light Pink */
+    --primary-color: #d76c7e;        /* Deeper Rose Pink */
+    --secondary-color: #f5a8c0;      /* Medium Pink */
     --light-color: #f8f9fa;
-    --dark-color: #5a5766;           /* Muted Purple-Gray */
+    --dark-color: #4a4754;           /* Deeper Purple-Gray */
     
-    /* Aesthetic Emotion Colors */
-    --happy-color: #97c1a9;          /* Sage Green - Serene, joyful */
-    --happy-gradient: #cbe2d6;       /* Lighter sage for gradient */
+    /* Aesthetic Emotion Colors - Deeper for better text contrast */
+    --happy-color: #5b9d74;          /* Deep Sage Green - Serene, joyful */
+    --happy-gradient: #89b79b;       /* Medium sage for gradient */
     
-    --sad-color: #8da9c4;            /* Dusty Blue - Calm, melancholy */
-    --sad-gradient: #b3c7d6;         /* Lighter blue for gradient */
+    --sad-color: #5d89b3;            /* Deeper Blue - Calm, melancholy */
+    --sad-gradient: #7fa3c7;         /* Medium blue for gradient */
     
-    --lonely-color: #d1b3c4;         /* Soft Mauve - Gentle, introspective */
-    --lonely-gradient: #e4d1df;      /* Lighter mauve for gradient */
+    --lonely-color: #a56e96;         /* Deeper Mauve - Gentle, introspective */
+    --lonely-gradient: #c58fb6;      /* Medium mauve for gradient */
     
-    --overwhelmed-color: #e4b7a0;    /* Terracotta - Warm, grounding */
-    --overwhelmed-gradient: #f6d8c8;  /* Lighter terracotta for gradient */
+    --overwhelmed-color: #c27d60;    /* Deeper Terracotta - Warm, grounding */
+    --overwhelmed-gradient: #d89a7d;  /* Medium terracotta for gradient */
     
-    --dontknow-color: #f2d0a9;       /* Warm Beige - Neutral, open */
-    --dontknow-gradient: #f8e4c9;    /* Lighter beige for gradient */
+    --dontknow-color: #d9a45d;       /* Deeper Gold - Neutral, open */
+    --dontknow-gradient: #e5b979;    /* Medium gold for gradient */
     
-    --birthday-color: #ffafcc;       /* Soft Pink */
-    --birthday-gradient: #ffc8dd;    /* Lighter pink for gradient */
+    --birthday-color: #f7749d;       /* Deeper Pink */
+    --birthday-gradient: #ff96b7;    /* Medium pink for gradient */
     --transition-time: 0.4s;
     
-    /* Additional Floral Colors */
-    --floral-accent-1: #f2cc8f;      /* Muted Yellow */
-    --floral-accent-2: #bfd8b8;      /* Mint Green */
-    --floral-accent-3: #d8bfd8;      /* Thistle */
-    --floral-accent-4: #ddbea9;      /* Tan */
+    /* Additional Floral Colors - Deeper for accent use */
+    --floral-accent-1: #e5b362;      /* Deeper Yellow */
+    --floral-accent-2: #8db580;      /* Deeper Mint Green */
+    --floral-accent-3: #b98cb9;      /* Deeper Thistle */
+    --floral-accent-4: #c29c79;      /* Deeper Tan */
 }
 
 body {
@@ -678,7 +678,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .chat-message.received .chat-bubble {
-    background-color: #f8e6ff;
+    background-color: #f0e3f5;
     color: var(--dark-color);
     border-bottom-left-radius: 5px;
     border-left: 3px solid var(--primary-color);
