@@ -33,7 +33,7 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     background-color: #f8f9fa;
     color: var(--dark-color);
     transition: background-color var(--transition-time) ease, color var(--transition-time) ease;
@@ -132,6 +132,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
     font-weight: 700;
 }
 
@@ -241,6 +242,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .compliment {
+    font-family: 'Playfair Display', serif;
     font-size: 1.8rem;
     line-height: 1.4;
     font-style: italic;
@@ -408,6 +410,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .message {
+    font-family: 'Playfair Display', serif;
     font-size: 2rem;
     line-height: 1.4;
     font-style: italic;
@@ -480,6 +483,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .birthday-message {
+    font-family: 'Playfair Display', serif;
     font-size: 1.8rem;
     line-height: 1.4;
     font-style: italic;
@@ -667,6 +671,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 10px 15px;
     border-radius: 15px;
     word-wrap: break-word;
+    font-family: 'Playfair Display', serif;
     font-style: italic;
     transition: all 0.3s ease;
 }
