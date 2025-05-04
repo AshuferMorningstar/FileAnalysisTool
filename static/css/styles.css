@@ -728,9 +728,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .chat-time {
-    font-size: 0.7rem;
-    color: #a0a0a0;
-    margin-left: 10px;
+    font-size: 0.65rem;
+    color: #8a8a8a;
+    text-align: right;
+    padding: 0 5px;
+    margin-top: 2px;
+    opacity: 0.7;
 }
 
 .message-actions {

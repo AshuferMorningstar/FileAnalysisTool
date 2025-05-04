@@ -654,6 +654,27 @@ document.addEventListener('DOMContentLoaded', function() {
             messageElement.dataset.messageId = messageId;
         }
         
+        // Get display name - use the passed userName if available
+        let displayName;
+        if (type === 'sent') {
+            // For sent messages, use the user's actual name, or "You" if not set
+            displayName = getUserName() || 'You';
+            // Store the real username in the message data
+            if (getUserName()) {
+                messageElement.dataset.userName = getUserName();
+            }
+        } else {
+            // For received messages, show the real username if available (from admin/creator)
+            displayName = userName || 'Louise';
+        }
+        
+        // Add username above the message bubble (WhatsApp style)
+        const senderNameDisplay = document.createElement('div');
+        senderNameDisplay.classList.add('chat-sender-name-display');
+        senderNameDisplay.textContent = displayName;
+        messageElement.appendChild(senderNameDisplay);
+        
+        // Create message bubble
         const bubbleElement = document.createElement('div');
         bubbleElement.classList.add('chat-bubble');
         
@@ -686,31 +707,11 @@ document.addEventListener('DOMContentLoaded', function() {
             bubbleElement.textContent = message;
         }
         
-        // Create sender element with timestamp
-        const senderElement = document.createElement('div');
-        senderElement.classList.add('chat-sender');
+        // Add bubble to message container
+        messageElement.appendChild(bubbleElement);
         
-        // Get display name - use the passed userName if available
-        let displayName;
-        if (type === 'sent') {
-            displayName = 'You';
-            // Store the real username in the message data
-            if (getUserName()) {
-                messageElement.dataset.userName = getUserName();
-            }
-        } else {
-            // For received messages, show the real username if available (from admin/creator)
-            displayName = userName || sender;
-        }
-        
-        // Add sender name
-        const senderName = document.createElement('span');
-        senderName.textContent = displayName;
-        senderName.classList.add('chat-sender-name');
-        senderElement.appendChild(senderName);
-        
-        // Add timestamp
-        const timeElement = document.createElement('span');
+        // Create timestamp element below the bubble
+        const timeElement = document.createElement('div');
         timeElement.classList.add('chat-time');
         
         // If timestamp is provided (from history), use it
@@ -721,10 +722,7 @@ document.addEventListener('DOMContentLoaded', function() {
             timeElement.textContent = formatTimestamp(new Date());
         }
         
-        senderElement.appendChild(timeElement);
-        
-        messageElement.appendChild(bubbleElement);
-        messageElement.appendChild(senderElement);
+        messageElement.appendChild(timeElement);
         
         // Only add edit and delete buttons to sent messages (from the current user)
         // And only if a message ID is provided (meaning it's a message from the database)
@@ -811,31 +809,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === 'success') {
                     // If there are no messages, show a welcome message
                     if (data.messages.length === 0) {
-                        const welcomeMsg = document.createElement('div');
-                        welcomeMsg.classList.add('chat-message', 'received');
-                        
-                        const welcomeBubble = document.createElement('div');
-                        welcomeBubble.classList.add('chat-bubble');
-                        welcomeBubble.textContent = "Hello! I'm Bunny, your friendly chat companion! 🐰 Messages you send here will be received by Louise's creator. Feel free to leave any thoughts or messages!";
-                        
-                        const welcomeSender = document.createElement('div');
-                        welcomeSender.classList.add('chat-sender');
-                        
-                        // Add sender name
-                        const senderName = document.createElement('span');
-                        senderName.textContent = 'Bunny';
-                        welcomeSender.appendChild(senderName);
-                        
-                        // Add timestamp
-                        const timeElement = document.createElement('span');
-                        timeElement.classList.add('chat-time');
-                        timeElement.textContent = formatTimestamp(new Date());
-                        welcomeSender.appendChild(timeElement);
-                        
-                        welcomeMsg.appendChild(welcomeBubble);
-                        welcomeMsg.appendChild(welcomeSender);
-                        
-                        chatMessages.appendChild(welcomeMsg);
+                        // Use the new addMessageToChat function with the WhatsApp-style format
+                        addMessageToChat(
+                            'Bunny', 
+                            "Hello! I'm Bunny, your friendly chat companion! 🐰 Messages you send here will be received by Louise's creator. Feel free to leave any thoughts or messages!", 
+                            'received',
+                            new Date(), // current timestamp
+                            null, // no message ID for welcome message
+                            'Bunny' // username to display
+                        );
                     } else {
                         // Display existing chat history with staggered animations
                         data.messages.forEach((item, index) => {
