@@ -253,6 +253,12 @@ def get_chat_history():
     } for msg in messages]
     
     return jsonify({"status": "success", "messages": message_list})
+    
+@app.route("/birthday-preview")
+def birthday_preview():
+    """A special route to preview the birthday page any time"""
+    greeting = get_birthday_message()
+    return render_template("birthday.html", greeting=greeting)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
