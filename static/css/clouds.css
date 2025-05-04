@@ -1,0 +1,118 @@
+/* Clouds Animation */
+.clouds-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.cloud {
+    position: absolute;
+    width: 200px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 200px;
+    animation: float-cloud linear infinite;
+    opacity: 0;
+}
+
+.cloud::before,
+.cloud::after {
+    content: '';
+    position: absolute;
+    background: rgba(255, 255, 255, 0.4);
+    width: 100px;
+    height: 80px;
+    top: -15px;
+    border-radius: 100px;
+}
+
+.cloud::before {
+    left: 10px;
+}
+
+.cloud::after {
+    right: 10px;
+    width: 120px;
+    height: 100px;
+    top: -25px;
+}
+
+.cloud:nth-child(1) {
+    top: 10%;
+    animation-duration: 120s;
+    animation-delay: 0s;
+    width: 230px;
+}
+
+.cloud:nth-child(2) {
+    top: 25%;
+    animation-duration: 90s;
+    animation-delay: 15s;
+    width: 180px;
+}
+
+.cloud:nth-child(3) {
+    top: 50%;
+    animation-duration: 110s;
+    animation-delay: 5s;
+    width: 250px;
+}
+
+.cloud:nth-child(4) {
+    top: 75%;
+    animation-duration: 130s;
+    animation-delay: 10s;
+    width: 150px;
+}
+
+.cloud:nth-child(5) {
+    top: 35%;
+    animation-duration: 100s;
+    animation-delay: 25s;
+    width: 210px;
+}
+
+.cloud:nth-child(6) {
+    top: 60%;
+    animation-duration: 140s;
+    animation-delay: 8s;
+    width: 190px;
+}
+
+@keyframes float-cloud {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    10% {
+        opacity: 0.6;
+    }
+    90% {
+        opacity: 0.6;
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(100vw);
+    }
+}
+
+/* Adjust cloud opacity for different page backgrounds */
+.welcome-page .cloud,
+.welcome-page .cloud::before,
+.welcome-page .cloud::after,
+.feelings-page .cloud,
+.feelings-page .cloud::before,
+.feelings-page .cloud::after,
+.response-page .cloud,
+.response-page .cloud::before,
+.response-page .cloud::after,
+.birthday-page .cloud,
+.birthday-page .cloud::before,
+.birthday-page .cloud::after {
+    background: rgba(255, 255, 255, 0.15);
+}
