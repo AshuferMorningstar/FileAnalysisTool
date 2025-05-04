@@ -1,8 +1,28 @@
 // Function to format timestamp nicely
 function formatTimestamp(date) {
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    const messageDate = new Date(date);
+    const messageDay = new Date(messageDate.getFullYear(), messageDate.getMonth(), messageDate.getDate());
+    
+    const hours = messageDate.getHours().toString().padStart(2, '0');
+    const minutes = messageDate.getMinutes().toString().padStart(2, '0');
+    const time = `${hours}:${minutes}`;
+    
+    // Format: Today at 14:30, Yesterday at 09:15, or May 3 at 16:45
+    if (messageDay.getTime() === today.getTime()) {
+        return `Today at ${time}`;
+    } else if (messageDay.getTime() === yesterday.getTime()) {
+        return `Yesterday at ${time}`;
+    } else {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const month = months[messageDate.getMonth()];
+        const day = messageDate.getDate();
+        return `${month} ${day} at ${time}`;
+    }
 }
 
 // Function to generate a device ID and store it in localStorage
@@ -496,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Function to add message to chat UI with improved animations
-    function addMessageToChat(sender, message, type, timestamp = null, messageId = null) {
+    function addMessageToChat(sender, message, type, timestamp = null, messageId = null, userName = null) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('chat-message', type);
         
@@ -508,8 +528,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const bubbleElement = document.createElement('div');
         bubbleElement.classList.add('chat-bubble');
         
+        // Handle HTML content (images, audio, etc.)
+        if (message.includes('<img') || message.includes('<audio') || message.includes('<a')) {
+            bubbleElement.innerHTML = message;
+        }
         // Apply "typing" effect for received messages
-        if (type === 'received') {
+        else if (type === 'received') {
             // Start with empty content, then type it out
             bubbleElement.textContent = '';
             
@@ -537,9 +561,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const senderElement = document.createElement('div');
         senderElement.classList.add('chat-sender');
         
+        // Get display name - use the passed userName if available
+        let displayName;
+        if (type === 'sent') {
+            displayName = 'You';
+            // Store the real username in the message data
+            if (getUserName()) {
+                messageElement.dataset.userName = getUserName();
+            }
+        } else {
+            // For received messages, show the real username if available (from admin/creator)
+            displayName = userName || sender;
+        }
+        
         // Add sender name
         const senderName = document.createElement('span');
-        senderName.textContent = sender;
+        senderName.textContent = displayName;
+        senderName.classList.add('chat-sender-name');
         senderElement.appendChild(senderName);
         
         // Add timestamp
@@ -676,7 +714,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             // Delay each message slightly for a staggered effect
                             setTimeout(() => {
-                                addMessageToChat(item.sender, item.content, type, item.timestamp, item.id);
+                                // Pass the user_name from the database
+                                addMessageToChat(item.sender, item.content, type, item.timestamp, item.id, item.user_name);
                                 
                                 // Make rabbit appear occasionally for received messages
                                 if (type === 'received' && Math.random() > 0.7) {
