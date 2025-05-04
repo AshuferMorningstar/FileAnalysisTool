@@ -55,44 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Clear input
                     chatInput.value = '';
                     
-                    // Automatic response after a delay
-                    setTimeout(() => {
-                        const responses = [
-                            "I'm here for you, Louise! 💕",
-                            "Thanks for sharing that with me.",
-                            "You're so special to me, Louise.",
-                            "I appreciate you so much!",
-                            "You're doing great, Louise!",
-                            "Keep being amazing, Louise!",
-                            "I'm always here to listen.",
-                            "You matter so much! ❤️",
-                            "Your feelings are valid, Louise.",
-                            "Take all the time you need."
-                        ];
-                        const response = responses[Math.floor(Math.random() * responses.length)];
-                        
-                        // Save Louise's response to the server
-                        fetch('/save_chat', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                sender: 'Louise',
-                                message: response
-                            }),
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                // Add response to chat UI
-                                addMessageToChat('Louise', response, 'received');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error saving response:', error);
-                        });
-                    }, 1000);
+                    // No automatic response - this is a direct chat with Louise
                 }
             })
             .catch(error => {
@@ -131,36 +94,11 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    // Check if we need to add a welcome message
-                    if (data.messages.length === 0) {
-                        // Send welcome message to server
-                        fetch('/save_chat', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                sender: 'Louise',
-                                message: "Welcome to our special chat! I'm here whenever you need me. How are you feeling today?"
-                            }),
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                // Add welcome message to UI
-                                addMessageToChat('Louise', "Welcome to our special chat! I'm here whenever you need me. How are you feeling today?", 'received');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error saving welcome message:', error);
-                        });
-                    } else {
-                        // Display existing chat history
-                        data.messages.forEach(item => {
-                            const type = item.sender === 'You' ? 'sent' : 'received';
-                            addMessageToChat(item.sender, item.content, type);
-                        });
-                    }
+                    // Display existing chat history without adding a welcome message
+                    data.messages.forEach(item => {
+                        const type = item.sender === 'You' ? 'sent' : 'received';
+                        addMessageToChat(item.sender, item.content, type);
+                    });
                 }
             })
             .catch(error => {
