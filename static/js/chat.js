@@ -401,6 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Save the message to the database
                     const userName = getUserName();
                     const deviceId = getOrCreateDeviceId();
+                    const userIdentifier = getUserIdentifier();
                     
                     fetch('/save_chat', {
                         method: 'POST',
@@ -412,6 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             message: messageContent,
                             user_name: userName,
                             device_id: deviceId,
+                            user_identifier: userIdentifier,
                             message_type: messageType,
                             file_path: filePath
                         }),
@@ -850,14 +852,30 @@ document.addEventListener('DOMContentLoaded', function() {
                             'Bunny' // username to display
                         );
                     } else {
+                        // Get the current user's identifier
+                        const currentUserIdentifier = getUserIdentifier();
+                        
                         // Display existing chat history with staggered animations
                         data.messages.forEach((item, index) => {
-                            const type = item.sender === 'You' ? 'sent' : 'received';
+                            // Determine if this message is from the current user
+                            // by comparing user identifiers
+                            const isFromCurrentUser = item.user_identifier === currentUserIdentifier;
+                            
+                            // Set message type based on the identifier match, not just the sender text
+                            const type = isFromCurrentUser ? 'sent' : 'received';
                             
                             // Delay each message slightly for a staggered effect
                             setTimeout(() => {
-                                // Pass the user_name from the database
-                                addMessageToChat(item.sender, item.content, type, item.timestamp, item.id, item.user_name);
+                                // Pass all relevant info including user_identifier
+                                addMessageToChat(
+                                    item.sender, 
+                                    item.content, 
+                                    type, 
+                                    item.timestamp, 
+                                    item.id, 
+                                    item.user_name, 
+                                    item.user_identifier
+                                );
                                 
                                 // Make rabbit appear occasionally for received messages
                                 if (type === 'received' && Math.random() > 0.7) {
