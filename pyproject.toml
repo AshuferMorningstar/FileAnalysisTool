@@ -1,10 +1,10 @@
 [project]
 name = "repl-nix-workspace"
 version = "0.1.0"
-description = "Add your description here"
-authors = []
-license = ""
-readme = ""
+description = "A sample project description"
+authors = [{name = "Ashufer", email = "ashufer1211@gmail.com"}]
+license = "MIT"
+readme = "README.md"
 keywords = []
 classifiers = []
 dependencies = [

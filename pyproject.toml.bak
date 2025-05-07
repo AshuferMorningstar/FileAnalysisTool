@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "repl-nix-workspace"
 version = "0.1.0"
-description = "Add your description here"
+description = "This website is for make you feel good"
 authors = []
 license = ""
 readme = ""
