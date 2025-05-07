@@ -1,5 +1,5 @@
 [project]
-name = "repl-nix-workspace"
+name = "repl_nix_workspace"
 version = "0.1.0"
 description = "A sample project description"
 authors = [{name = "Ashufer", email = "ashufer1211@gmail.com"}]
