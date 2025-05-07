@@ -1,46 +1,34 @@
-from flask import Flask, render_template, request, jsonify, url_for, send_from_directory
-import random
-import os
-import json
-import uuid
+# app.py
 import werkzeug
+from flask import Flask, render_template, request, jsonify, url_for, send_from_directory
+import random, os, json, uuid
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
+from core import db
 
-class Base(DeclarativeBase):
-    pass
-
-# Create the Flask application
+# Flask app setup
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET", "louise-support-secret")
+with app.app_context():
+    from models import Message, Compliment, BirthdayMessage, ChatMessage
 
-# Database configuration - ensure the environment variable is available
-if os.environ.get("DATABASE_URL"):
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
-else:
-    # Fallback for development
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///louise.db"
+app.secret_key = os.getenv("SESSION_SECRET", "louise-support-secret")
 
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///louise.db")
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 300,
     "pool_pre_ping": True
 }
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# Initialize SQLAlchemy with our app
-db = SQLAlchemy(model_class=Base)
+# Init db
 db.init_app(app)
 
-# Import models after initializing db
+# Import models only after db is initialized
 with app.app_context():
     from models import Message, Compliment, BirthdayMessage, ChatMessage
-    
-    # Drop ChatMessage table to recreate with new columns
-    ChatMessage.__table__.drop(db.engine, checkfirst=True)
-    
-    # Initialize database tables
     db.create_all()
+
+# Your remaining route logic goes here...
+
     
     # Create initial compliments if none exist
     if Compliment.query.count() == 0:

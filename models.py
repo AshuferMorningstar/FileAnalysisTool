@@ -1,32 +1,33 @@
+# models.py
 from datetime import datetime
-from app import db
+from core import db
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    category = db.Column(db.String(50), nullable=False)
-    content = db.Column(db.Text, nullable=False)
+    content = db.Column(db.String(500))
+    category = db.Column(db.String(50))
     used = db.Column(db.Boolean, default=False)
-    last_used = db.Column(db.DateTime, nullable=True)
+    last_used = db.Column(db.DateTime)
 
 class Compliment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text, nullable=False)
+    content = db.Column(db.String(300))
     used = db.Column(db.Boolean, default=False)
-    last_used = db.Column(db.DateTime, nullable=True)
+    last_used = db.Column(db.DateTime)
 
 class BirthdayMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text, nullable=False)
+    content = db.Column(db.String(500))
     used = db.Column(db.Boolean, default=False)
-    last_used = db.Column(db.DateTime, nullable=True)
+    last_used = db.Column(db.DateTime)
 
 class ChatMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    sender = db.Column(db.String(50), nullable=False)
-    content = db.Column(db.Text, nullable=False)
+    sender = db.Column(db.String(100))
+    content = db.Column(db.String(500))
+    user_name = db.Column(db.String(100))
+    device_id = db.Column(db.String(100))
+    user_identifier = db.Column(db.String(200))
+    message_type = db.Column(db.String(50))
+    file_path = db.Column(db.String(300))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    user_name = db.Column(db.String(100), nullable=True)
-    device_id = db.Column(db.String(100), nullable=True)
-    user_identifier = db.Column(db.String(200), nullable=True)  # Combined username+device ID for uniquely identifying users
-    message_type = db.Column(db.String(20), default='text')
-    file_path = db.Column(db.String(200), nullable=True)
