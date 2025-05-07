@@ -11,10 +11,10 @@ description = "A sample project description"
 authors = [{name = "Ashufer", email = "ashufer1211@gmail.com"}]
 license = "MIT"
 readme = "README.md"
+requires-python = ">=3.9"
 keywords = []
 classifiers = []
 dependencies = [
-    "python>=3.11",
     "email-validator>=2.2.0",
     "flask>=3.1.0",
     "flask-sqlalchemy>=3.1.1",
