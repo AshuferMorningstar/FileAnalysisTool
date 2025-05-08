@@ -4,11 +4,11 @@ version = "0.1.0"
 description = "A sample project description"
 authors = ["Ashufer <ashufer1211@gmail.com>"]
 
-[project]
+[tool.poetry]
 name = "repl_nix_workspace"
 version = "0.1.0"
 description = "A sample project description"
-authors = [{name = "Ashufer", email = "ashufer1211@gmail.com"}]
+authors = ["Ashufer <ashufer1211@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 requires-python = ">=3.9"
