@@ -22,7 +22,8 @@ dependencies = [
     "openai>=1.77.0",
     "psycopg2-binary>=2.9.10",
     "sendgrid>=6.11.0",
-    "twilio>=9.5.2"
+    "twilio>=9.5.2",
+    "werkzeug>=2.0.0"
 ]
 dynamic = ["version"]
 
